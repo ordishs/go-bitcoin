@@ -20,6 +20,148 @@ type BlockchainInfo struct {
 	ChainWork            string  `json:"chainwork,omitempty"`
 }
 
+// Network comment
+type Network struct {
+	Name                       string `json:"name"`
+	Limited                    bool   `json:"limited"`
+	Reachable                  bool   `json:"reachable"`
+	Proxy                      string `json:"proxy"`
+	ProxyRandmomizeCredentials bool   `json:"proxy_randomize_credentials"`
+}
+
+// LocalAddress comment
+type LocalAddress struct {
+	Address string `json:"address"`
+	Port    int    `json:"port"`
+	Score   int    `json:"score"`
+}
+
+// NetworkInfo comment
+type NetworkInfo struct {
+	Version           int            `json:"version"`
+	SubVersion        string         `json:"subversion"`
+	ProtocolVersion   int            `json:"protocolversion"`
+	LocalServices     string         `json:"localservices"`
+	LocalRelay        bool           `json:"localrelay"`
+	TimeOffset        int            `json:"timeoffset"`
+	TXPropagationFreq int            `json:"txnpropagationfreq"`
+	TXPropagationLen  int            `json:"txnpropagationqlen"`
+	NetworkActive     bool           `json:"networkactive"`
+	Connections       int            `json:"connections"`
+	AddressCount      int            `json:"addresscount"`
+	Networks          []Network      `json:"networks"`
+	RelayFee          float64        `json:"relayfee"`
+	ExcessUTXOCharge  float64        `json:"excessutxocharge"`
+	LocalAddresses    []LocalAddress `json:"localaddresses"`
+	Warnings          string         `json:"warnings"`
+}
+
+// NetTotals comment
+type NetTotals struct {
+	TotalBytesRecv int `json:"totalbytesrecv"`
+	TotalBytesSent int `json:"totalbytessent"`
+	TimeMillis     int `json:"timemillis"`
+	UploadTarget   struct {
+		TimeFrame             int  `json:"timeframe"`
+		Target                int  `json:"target"`
+		TargetReached         bool `json:"target_reached"`
+		ServeHistoricalBlocks bool `json:"serve_historical_blocks"`
+		BytesLeftInCycle      int  `json:"bytes_left_in_cycle"`
+		TimeLeftInCycle       int  `json:"time_left_in_cycle"`
+	} `json:"uploadtarget"`
+}
+
+// MiningInfo comment
+type MiningInfo struct {
+	Blocks                int     `json:"blocks"`
+	CurrentBlockSize      int     `json:"currentblocksize"`
+	CurrentBlockTX        int     `json:"currentblocktx"`
+	Difficulty            float64 `json:"difficulty"`
+	BlocksPriorityPercent int     `json:"blockprioritypercentage"`
+	Errors                string  `json:"errors"`
+	NetworkHashPS         float64 `json:"networkhashps"`
+	PooledTX              int     `json:"pooledtx"`
+	Chain                 string  `json:"chain"`
+}
+
+// BytesData struct
+type BytesData struct {
+	Addr        int `json:"addr"`
+	BlockTXN    int `json:"blocktxn"`
+	CmpctBlock  int `json:"cmpctblock"`
+	FeeFilter   int `json:"feefilter"`
+	GetAddr     int `json:"getaddr"`
+	GetData     int `json:"getdata"`
+	GetHeaders  int `json:"getheaders"`
+	Headers     int `json:"headers"`
+	Inv         int `json:"inv"`
+	NotFound    int `json:"notfound"`
+	Ping        int `json:"ping"`
+	Pong        int `json:"pong"`
+	Reject      int `json:"reject"`
+	SendCmpct   int `json:"sendcmpct"`
+	SendHeaders int `json:"sendheaders"`
+	TX          int `json:"tx"`
+	VerAck      int `json:"verack"`
+	Version     int `json:"version"`
+}
+
+// Peer struct
+type Peer struct {
+	ID             int     `json:"id"`
+	Addr           string  `json:"addr"`
+	AddrLocal      string  `json:"addrlocal"`
+	Services       string  `json:"services"`
+	RelayTXes      bool    `json:"relaytxes"`
+	LastSend       int     `json:"lastsend"`
+	LastRecv       int     `json:"lastrecv"`
+	BytesSent      int     `json:"bytessent"`
+	BytesRecv      int     `json:"bytesrecv"`
+	ConnTime       int     `json:"conntime"`
+	TimeOffset     int     `json:"timeoffset"`
+	PingTime       float64 `json:"pingtime"`
+	MinPing        float64 `json:"minping"`
+	Version        int     `json:"version"`
+	Subver         string  `json:"subver"`
+	Inbound        bool    `json:"inbound"`
+	AddNode        bool    `json:"addnode"`
+	StartingHeight int     `json:"startingheight"`
+	TXNInvSize     int     `json:"txninvsize"`
+	Banscore       int     `json:"banscore"`
+	SyncedHeaders  int     `json:"synced_headers"`
+	SyncedBlocks   int     `json:"synced_blocks"`
+	// "inflight": [],
+	WhiteListed     bool      `json:"whitelisted"`
+	BytesSendPerMsg BytesData `json:"bytessent_per_msg"`
+	BytesRecvPerMsg BytesData `json:"bytesrecv_per_msg"`
+}
+
+// PeerInfo comment
+type PeerInfo []Peer
+
+// RawMemPool comment
+type RawMemPool []string
+
+// ChainTXStats struct
+type ChainTXStats struct {
+	Time             int     `json:"time"`
+	TXCount          int     `json:"txcount"`
+	WindowBlockCount int     `json:"window_block_count"`
+	WindowTXCount    int     `json:"window_tx_count"`
+	WindowInterval   int     `json:"window_interval"`
+	TXRate           float64 `json:"txrate"`
+}
+
+// Address comment
+type Address struct {
+	IsValid      bool   `json:"isvalid"`
+	Address      string `json:"address"`
+	ScriptPubKey string `json:"scriptPubKey"`
+	IsMine       bool   `json:"ismine"`
+	IsWatchOnly  bool   `json:"iswatchonly"`
+	IsScript     bool   `json:"isscript"`
+}
+
 // Transaction comment
 type Transaction struct {
 	TXID string `json:"txid"`

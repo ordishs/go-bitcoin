@@ -30,6 +30,173 @@ func TestGetConnectionCount(t *testing.T) {
 	t.Logf("%d", count)
 }
 
+func TestGetNetworkInfo(t *testing.T) {
+	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	res, err := b.GetNetworkInfo()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("%#v", res)
+}
+
+func TestGetNetTotals(t *testing.T) {
+	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	res, err := b.GetNetTotals()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("%#v", res)
+}
+func TestMiningInfo(t *testing.T) {
+	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	res, err := b.GetMiningInfo()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("%#v", res)
+}
+
+func TestUptime(t *testing.T) {
+	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	count, err := b.Uptime()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("%d", count)
+}
+
+func TestGetPeerInfo(t *testing.T) {
+	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	res, err := b.GetPeerInfo()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("%#v", res)
+}
+
+func TestGetRawMempool(t *testing.T) {
+	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	res, err := b.GetRawMempool()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("%#v", res)
+}
+
+func TestGetChainTxStats(t *testing.T) {
+	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	stats, err := b.GetChainTxStats(0)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("%#v", stats)
+}
+
+func TestValidateAddress(t *testing.T) {
+	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	stats, err := b.ValidateAddress("13q47QSaXBHMZVFHFENtTpfd7rtaWTe3v1")
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("%#v", stats)
+}
+
+func TestHelp(t *testing.T) {
+	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	res, err := b.GetHelp()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("%s", res)
+}
+
+func TestGetBestBlockHash(t *testing.T) {
+	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	res, err := b.GetBestBlockHash()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("%s", res)
+}
+
+func TestGetBlockHash(t *testing.T) {
+	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	res, err := b.GetBlockHash(555432)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("%s", res)
+}
+
+func TestSendRawTransaction(t *testing.T) {
+	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	res, err := b.SendRawTransaction("0100000002b212995825c72d1abf5505a3017694f564dda29908fe5d45ab45b6a3e1748ca5010000006a473044022030d77fbaf3ec092a5038e7fc0235bb2126ca5099dccac5383d58cea01a8d329302207581678aa91743abe31c4cf54e16b0c58e05631d20ccde33be242d96cb57ff1141210373b675c91c95391b6d7977de12bf081bae193470aa0199efc1f847d799497b67ffffffff428947c3e5fb13faf1e71ea86b209b88c3b2e1cd77b326b696fc6e9fb3d0ced6000000006b483045022100801a316894dc40d1e335a14d25b6a7b5b72691b0842878105942d86303a09e1502204d737aecf5d1972e880e329363681bb7c97334e262cf4a20293fee3d8ca87d7041210373b675c91c95391b6d7977de12bf081bae193470aa0199efc1f847d799497b67ffffffff030a1a0000000000001976a914dc9ad4971a54b52308fa3c958df73eac52fb552f88acc6160000000000001976a914a933500e7326f81a974d4212aa16ae29f92e257188ac00000000000000003d6a3b53656e642076696120612057656368617420626f74206d616465206279206161726f6e363720687474703a2f2f6269742e6c792f333331536d754300000000")
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("%s", res)
+}
+
 func TestGetBlock(t *testing.T) {
 	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
 	if err != nil {
