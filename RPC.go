@@ -5,15 +5,20 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/ordishs/gocore"
+	cache "github.com/patrickmn/go-cache"
+	"golang.org/x/sync/singleflight"
 )
 
 var logger = gocore.Log("go-bitcoin")
 
 // A Bitcoind represents a Bitcoind client
 type Bitcoind struct {
-	client *rpcClient
+	client  *rpcClient
+	Storage *cache.Cache
+	group   singleflight.Group
 }
 
 // New return a new bitcoind
@@ -22,12 +27,43 @@ func New(host string, port int, user, passwd string, useSSL bool) (*Bitcoind, er
 	if err != nil {
 		return nil, err
 	}
-	return &Bitcoind{rpcClient}, nil
+
+	defaultExpiration := 5 * time.Second
+	cleanupInterval := 10 * time.Second
+
+	return &Bitcoind{
+		client:  rpcClient,
+		Storage: cache.New(defaultExpiration, cleanupInterval),
+		group:   singleflight.Group{},
+	}, nil
+}
+
+func (b *Bitcoind) call(method string, params []interface{}) (rpcResponse, error) {
+	key := fmt.Sprintf("%s|%v", method, params)
+	// Check cache
+	value, found := b.Storage.Get(key)
+	if found {
+		fmt.Printf("CACHED: ")
+		return value.(rpcResponse), nil
+	}
+
+	// Combine memoized function with a cache store
+	value, err, _ := b.group.Do(key, func() (interface{}, error) {
+		fmt.Printf("EXECED: ")
+		data, innerErr := b.client.call(method, params)
+
+		if innerErr == nil {
+			b.Storage.Set(key, data, cache.DefaultExpiration)
+		}
+
+		return data, innerErr
+	})
+	return value.(rpcResponse), err
 }
 
 // GetConnectionCount returns the number of connections to other nodes.
 func (b *Bitcoind) GetConnectionCount() (count uint64, err error) {
-	r, err := b.client.call("getconnectioncount", nil)
+	r, err := b.call("getconnectioncount", nil)
 	if err != nil {
 		return 0, err
 	}
@@ -37,7 +73,7 @@ func (b *Bitcoind) GetConnectionCount() (count uint64, err error) {
 
 // GetBlockchainInfo returns the number of connections to other nodes.
 func (b *Bitcoind) GetBlockchainInfo() (info BlockchainInfo, err error) {
-	r, err := b.client.call("getblockchaininfo", nil)
+	r, err := b.call("getblockchaininfo", nil)
 	if err != nil {
 		return
 	}
@@ -54,7 +90,7 @@ func (b *Bitcoind) GetBlockchainInfo() (info BlockchainInfo, err error) {
 
 // GetNetworkInfo returns the number of connections to other nodes.
 func (b *Bitcoind) GetNetworkInfo() (info NetworkInfo, err error) {
-	r, err := b.client.call("getnetworkinfo", nil)
+	r, err := b.call("getnetworkinfo", nil)
 	if err != nil {
 		return
 	}
@@ -71,7 +107,7 @@ func (b *Bitcoind) GetNetworkInfo() (info NetworkInfo, err error) {
 
 // GetNetTotals returns the number of connections to other nodes.
 func (b *Bitcoind) GetNetTotals() (totals NetTotals, err error) {
-	r, err := b.client.call("getnettotals", nil)
+	r, err := b.call("getnettotals", nil)
 	if err != nil {
 		return
 	}
@@ -88,7 +124,7 @@ func (b *Bitcoind) GetNetTotals() (totals NetTotals, err error) {
 
 // GetMiningInfo comment
 func (b *Bitcoind) GetMiningInfo() (info MiningInfo, err error) {
-	r, err := b.client.call("getmininginfo", nil)
+	r, err := b.call("getmininginfo", nil)
 	if err != nil {
 		return
 	}
@@ -105,7 +141,7 @@ func (b *Bitcoind) GetMiningInfo() (info MiningInfo, err error) {
 
 // Uptime returns the number of connections to other nodes.
 func (b *Bitcoind) Uptime() (uptime uint64, err error) {
-	r, err := b.client.call("uptime", nil)
+	r, err := b.call("uptime", nil)
 	if err != nil {
 		return 0, err
 	}
@@ -115,7 +151,7 @@ func (b *Bitcoind) Uptime() (uptime uint64, err error) {
 
 // GetPeerInfo returns the number of connections to other nodes.
 func (b *Bitcoind) GetPeerInfo() (info PeerInfo, err error) {
-	r, err := b.client.call("getpeerinfo", nil)
+	r, err := b.call("getpeerinfo", nil)
 	if err != nil {
 		return
 	}
@@ -133,7 +169,7 @@ func (b *Bitcoind) GetPeerInfo() (info PeerInfo, err error) {
 // GetRawMempool returns the number of connections to other nodes.
 func (b *Bitcoind) GetRawMempool() (raw RawMemPool, err error) {
 	p := []interface{}{false}
-	r, err := b.client.call("getrawmempool", p)
+	r, err := b.call("getrawmempool", p)
 	if err != nil {
 		return
 	}
@@ -151,7 +187,7 @@ func (b *Bitcoind) GetRawMempool() (raw RawMemPool, err error) {
 // GetChainTxStats returns the number of connections to other nodes.
 func (b *Bitcoind) GetChainTxStats(blockcount int) (stats ChainTXStats, err error) {
 	p := []interface{}{blockcount}
-	r, err := b.client.call("getchaintxstats", p)
+	r, err := b.call("getchaintxstats", p)
 	if err != nil {
 		return
 	}
@@ -169,7 +205,7 @@ func (b *Bitcoind) GetChainTxStats(blockcount int) (stats ChainTXStats, err erro
 // ValidateAddress returns the number of connections to other nodes.
 func (b *Bitcoind) ValidateAddress(address string) (addr Address, err error) {
 	p := []interface{}{address}
-	r, err := b.client.call("validateaddress", p)
+	r, err := b.call("validateaddress", p)
 	if err != nil {
 		return
 	}
@@ -186,7 +222,7 @@ func (b *Bitcoind) ValidateAddress(address string) (addr Address, err error) {
 
 // GetHelp returns the number of connections to other nodes.
 func (b *Bitcoind) GetHelp() (j []byte, err error) {
-	r, err := b.client.call("help", nil)
+	r, err := b.call("help", nil)
 	if err != nil {
 		return
 	}
@@ -197,7 +233,7 @@ func (b *Bitcoind) GetHelp() (j []byte, err error) {
 
 // GetBestBlockHash comment
 func (b *Bitcoind) GetBestBlockHash() (hash string, err error) {
-	r, err := b.client.call("getbestblockhash", nil)
+	r, err := b.call("getbestblockhash", nil)
 	if err != nil {
 		return "", err
 	}
@@ -208,7 +244,7 @@ func (b *Bitcoind) GetBestBlockHash() (hash string, err error) {
 // GetBlockHash comment
 func (b *Bitcoind) GetBlockHash(blockHeight int) (blockHash string, err error) {
 	p := []interface{}{blockHeight}
-	r, err := b.client.call("getblockhash", p)
+	r, err := b.call("getblockhash", p)
 	if err != nil {
 		return "", err
 	}
@@ -218,7 +254,7 @@ func (b *Bitcoind) GetBlockHash(blockHeight int) (blockHash string, err error) {
 
 // SendRawTransaction comment
 func (b *Bitcoind) SendRawTransaction(hex string) (txid string, err error) {
-	r, err := b.client.call("sendrawtransaction", []interface{}{hex})
+	r, err := b.call("sendrawtransaction", []interface{}{hex})
 	if err != nil {
 		return "", err
 	}
@@ -228,7 +264,7 @@ func (b *Bitcoind) SendRawTransaction(hex string) (txid string, err error) {
 
 // GetBlock returns information about the block with the given hash.
 func (b *Bitcoind) GetBlock(blockHash string) (block Block, err error) {
-	r, err := b.client.call("getblock", []string{blockHash})
+	r, err := b.call("getblock", []interface{}{blockHash})
 
 	if err != nil {
 		return
@@ -246,7 +282,7 @@ func (b *Bitcoind) GetBlock(blockHash string) (block Block, err error) {
 
 // GetRawTransaction returns raw transaction representation for given transaction id.
 func (b *Bitcoind) GetRawTransaction(txID string) (rawTx RawTransaction, err error) {
-	r, err := b.client.call("getrawtransaction", []interface{}{txID, 1})
+	r, err := b.call("getrawtransaction", []interface{}{txID, 1})
 	if err != nil {
 		return
 	}
@@ -256,7 +292,7 @@ func (b *Bitcoind) GetRawTransaction(txID string) (rawTx RawTransaction, err err
 
 // GetRawTransactionHex returns raw transaction representation for given transaction id.
 func (b *Bitcoind) GetRawTransactionHex(txID string) (rawTx string, err error) {
-	r, err := b.client.call("getrawtransaction", []interface{}{txID, 0})
+	r, err := b.call("getrawtransaction", []interface{}{txID, 0})
 	if err != nil {
 		return
 	}
@@ -273,7 +309,7 @@ func (b *Bitcoind) GetBlockTemplate() (template *BlockTemplate, err error) {
 		Rules:        []string{"segwit"},
 	}
 
-	r, err := b.client.call("getblocktemplate", []gbtParams{params})
+	r, err := b.call("getblocktemplate", []interface{}{params})
 	if err != nil {
 		return nil, err
 	}
@@ -285,7 +321,7 @@ func (b *Bitcoind) GetBlockTemplate() (template *BlockTemplate, err error) {
 // GetMiningCandidate comment
 func (b *Bitcoind) GetMiningCandidate() (template *MiningCandidate, err error) {
 
-	r, err := b.client.call("getminingcandidate", nil)
+	r, err := b.call("getminingcandidate", nil)
 	if err != nil {
 		return nil, err
 	}
