@@ -297,6 +297,17 @@ func (b *Bitcoind) GetBlock(blockHash string) (block *Block, err error) {
 	return
 }
 
+// GetBlockHex returns information about the block with the given hash.
+func (b *Bitcoind) GetBlockHex(blockHash string) (raw *string, err error) {
+	r, err := b.call("getblock", []interface{}{blockHash, 0})
+	if err != nil {
+		return
+	}
+
+	err = json.Unmarshal(r.Result, &raw)
+	return
+}
+
 // GetRawTransaction returns raw transaction representation for given transaction id.
 func (b *Bitcoind) GetRawTransaction(txID string) (rawTx *RawTransaction, err error) {
 	r, err := b.call("getrawtransaction", []interface{}{txID, 1})
