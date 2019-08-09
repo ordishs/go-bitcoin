@@ -7,12 +7,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/ordishs/gocore"
 	cache "github.com/patrickmn/go-cache"
 	"golang.org/x/sync/singleflight"
 )
-
-var logger = gocore.Log("go-bitcoin")
 
 // A Bitcoind represents a Bitcoind client
 type Bitcoind struct {
@@ -362,11 +359,9 @@ func (b *Bitcoind) SubmitBlock(hexData string) (result string, err error) {
 	r, err := b.client.call("submitblock", []interface{}{hexData})
 	if err != nil || r.Err != nil || string(r.Result) != "null" {
 		msg := fmt.Sprintf("******* BLOCK SUBMIT FAILED with error: %+v and result: %s\n", err, string(r.Result))
-		logger.Warnf("%s", msg)
 		return "", errors.New(msg)
 	}
 
-	logger.Infof("******* BLOCK SUBMITTED SUCCESS: %s\n", string(r.Result))
 	return string(r.Result), nil
 }
 
@@ -380,16 +375,12 @@ func (b *Bitcoind) SubmitMiningSolution(miningCandidateID string, nonce uint32, 
 		Version:  version,
 	}
 
-	logger.Infof("Sending submitminingsolution to bitcoin: %+v", params)
-
 	r, err := b.client.call("submitminingsolution", []interface{}{params})
 	if (err != nil && err.Error() != "") || r.Err != nil || (string(r.Result) != "null" && string(r.Result) != "true") {
 		msg := fmt.Sprintf("******* BLOCK SUBMIT FAILED with error: %+v and result: %s\n", err, string(r.Result))
-		logger.Warnf("%s", msg)
 		return "", errors.New(msg)
 	}
 
-	logger.Infof("******* BLOCK SUBMITTED SUCCESS.")
 	return string(r.Result), nil
 }
 
