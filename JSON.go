@@ -266,7 +266,9 @@ type BlockTxid struct {
 type RawTransaction struct {
 	Hex           string `json:"hex"`
 	TxID          string `json:"txid"`
+	Hash          string `json:"hash"`
 	Version       uint32 `json:"version"`
+	Size          uint32 `json:"size"`
 	LockTime      uint32 `json:"locktime"`
 	Vin           []Vin  `json:"vin"`
 	Vout          []Vout `json:"vout"`
