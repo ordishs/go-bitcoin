@@ -392,3 +392,14 @@ func (b *Bitcoind) SubmitMiningSolution(miningCandidateID string, nonce uint32, 
 	logger.Infof("******* BLOCK SUBMITTED SUCCESS.")
 	return string(r.Result), nil
 }
+
+// GetDifficulty comment
+func (b *Bitcoind) GetDifficulty() (difficulty float64, err error) {
+	r, err := b.call("getdifficulty", nil)
+	if err != nil {
+		return 0.0, err
+	}
+
+	difficulty, err = strconv.ParseFloat(string(r.Result), 64)
+	return
+}
