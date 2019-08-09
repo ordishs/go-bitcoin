@@ -166,6 +166,23 @@ func (b *Bitcoind) GetPeerInfo() (info PeerInfo, err error) {
 	return
 }
 
+// GetMempoolInfo comment
+func (b *Bitcoind) GetMempoolInfo() (info MempoolInfo, err error) {
+	r, err := b.call("getmempoolinfo", nil)
+	if err != nil {
+		return
+	}
+
+	if r.Err != nil {
+		rr := r.Err.(map[string]interface{})
+		err = fmt.Errorf("ERROR %s: %s", rr["code"], rr["message"])
+		return
+	}
+
+	err = json.Unmarshal(r.Result, &info)
+	return
+}
+
 // GetRawMempool returns the number of connections to other nodes.
 func (b *Bitcoind) GetRawMempool() (raw RawMemPool, err error) {
 	p := []interface{}{false}
@@ -263,7 +280,7 @@ func (b *Bitcoind) SendRawTransaction(hex string) (txid string, err error) {
 }
 
 // GetBlock returns information about the block with the given hash.
-func (b *Bitcoind) GetBlock(blockHash string) (block Block, err error) {
+func (b *Bitcoind) GetBlock(blockHash string) (block *Block, err error) {
 	r, err := b.call("getblock", []interface{}{blockHash})
 
 	if err != nil {
@@ -281,7 +298,7 @@ func (b *Bitcoind) GetBlock(blockHash string) (block Block, err error) {
 }
 
 // GetRawTransaction returns raw transaction representation for given transaction id.
-func (b *Bitcoind) GetRawTransaction(txID string) (rawTx RawTransaction, err error) {
+func (b *Bitcoind) GetRawTransaction(txID string) (rawTx *RawTransaction, err error) {
 	r, err := b.call("getrawtransaction", []interface{}{txID, 1})
 	if err != nil {
 		return
@@ -291,7 +308,7 @@ func (b *Bitcoind) GetRawTransaction(txID string) (rawTx RawTransaction, err err
 }
 
 // GetRawTransactionHex returns raw transaction representation for given transaction id.
-func (b *Bitcoind) GetRawTransactionHex(txID string) (rawTx string, err error) {
+func (b *Bitcoind) GetRawTransactionHex(txID string) (rawTx *string, err error) {
 	r, err := b.call("getrawtransaction", []interface{}{txID, 0})
 	if err != nil {
 		return

@@ -142,6 +142,15 @@ type PeerInfo []Peer
 // RawMemPool comment
 type RawMemPool []string
 
+// MempoolInfo comment
+type MempoolInfo struct {
+	Size           int     `json:"size"`
+	Bytes          int     `json:"bytes"`
+	Usage          int     `json:"usage"`
+	MaxMemPool     int     `json:"maxmempool"`
+	MemPoolMinFree float64 `json:"mempoolminfee"`
+}
+
 // ChainTXStats struct
 type ChainTXStats struct {
 	Time             int     `json:"time"`
@@ -212,28 +221,51 @@ type submitMiningSolutionParams struct {
 	Version  uint32 `json:"version"`
 }
 
-// Block comment
+// Block struct
 type Block struct {
 	Hash              string   `json:"hash"`
 	Confirmations     int64    `json:"confirmations"`
 	Size              uint64   `json:"size"`
-	Height            uint32   `json:"height"`
-	Version           uint32   `json:"version"`
-	Merkleroot        string   `json:"merkleroot"`
+	Height            uint64   `json:"height"`
+	Version           uint64   `json:"version"`
+	VersionHex        string   `json:"versionHex"`
+	MerkleRoot        string   `json:"merkleroot"`
+	TxCount           uint64   `json:"txcount"`
 	Tx                []string `json:"tx"`
-	Time              int64    `json:"time"`
+	Time              uint64   `json:"time"`
+	MedianTime        uint64   `json:"mediantime"`
 	Nonce             uint64   `json:"nonce"`
 	Bits              string   `json:"bits"`
 	Difficulty        float64  `json:"difficulty"`
-	Chainwork         string   `json:"chainwork,omitempty"`
-	Previousblockhash string   `json:"previousblockhash"`
-	Nextblockhash     string   `json:"nextblockhash"`
+	Chainwork         string   `json:"chainwork"`
+	PreviousBlockHash string   `json:"previousblockhash"`
+	NextBlockHash     string   `json:"nextblockhash"`
+	// extra properties
+	CoinbaseTx *Transaction `json:"coinbaseTx"`
+	TotalFees  float64      `json:"totalFees"`
+	Miner      string       `json:"miner"`
+	Pagination *BlockPage   `json:"pages"`
+}
+
+// BlockPage to store links
+type BlockPage struct {
+	URI  []string `json:"uri"`
+	Size uint64   `json:"size"`
+}
+
+// BlockTxid comment
+type BlockTxid struct {
+	BlockHash  string   `json:"blockhash"`
+	Tx         []string `json:"tx"`
+	StartIndex uint64   `json:"startIndex"`
+	EndIndex   uint64   `json:"endIndex"`
+	Count      uint64   `json:"count"`
 }
 
 // RawTransaction comment
 type RawTransaction struct {
 	Hex           string `json:"hex"`
-	Txid          string `json:"txid"`
+	TxID          string `json:"txid"`
 	Version       uint32 `json:"version"`
 	LockTime      uint32 `json:"locktime"`
 	Vin           []Vin  `json:"vin"`

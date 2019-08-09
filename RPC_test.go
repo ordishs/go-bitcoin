@@ -113,6 +113,20 @@ func TestGetRawMempool(t *testing.T) {
 	t.Logf("%#v", res)
 }
 
+func TestGetMempoolInfo(t *testing.T) {
+	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	res, err := b.GetMempoolInfo()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("%#v", res)
+}
+
 func TestGetChainTxStats(t *testing.T) {
 	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
 	if err != nil {
@@ -236,7 +250,7 @@ func TestGetRawTransactionHex(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	t.Logf("%#v", tx)
+	t.Logf("%#v", *tx)
 }
 
 func TestGetBlockTemplate(t *testing.T) {
