@@ -241,10 +241,10 @@ type Block struct {
 	PreviousBlockHash string   `json:"previousblockhash"`
 	NextBlockHash     string   `json:"nextblockhash"`
 	// extra properties
-	CoinbaseTx *Transaction `json:"coinbaseTx"`
-	TotalFees  float64      `json:"totalFees"`
-	Miner      string       `json:"miner"`
-	Pagination *BlockPage   `json:"pages"`
+	CoinbaseTx *RawTransaction `json:"coinbaseTx"`
+	TotalFees  float64         `json:"totalFees"`
+	Miner      string          `json:"miner"`
+	Pagination *BlockPage      `json:"pages"`
 }
 
 // BlockPage to store links
@@ -271,7 +271,7 @@ type RawTransaction struct {
 	Vin           []Vin  `json:"vin"`
 	Vout          []Vout `json:"vout"`
 	BlockHash     string `json:"blockhash,omitempty"`
-	Confirmations uint64 `json:"confirmations,omitempty"`
+	Confirmations int64  `json:"confirmations,omitempty"`
 	Time          int64  `json:"time,omitempty"`
 	Blocktime     int64  `json:"blocktime,omitempty"`
 }
@@ -292,18 +292,27 @@ type Vin struct {
 	Sequence  uint32    `json:"sequence"`
 }
 
+// OpReturn comment
+type OpReturn struct {
+	Type   string   `json:"type"`
+	Action string   `json:"action"`
+	Text   string   `json:"text"`
+	Parts  []string `json:"parts"`
+}
+
 // ScriptPubKey Comment
 type ScriptPubKey struct {
-	Asm       string   `json:"asm"`
-	Hex       string   `json:"hex"`
-	ReqSigs   int      `json:"reqSigs,omitempty"`
-	Type      string   `json:"type"`
-	Addresses []string `json:"addresses,omitempty"`
+	ASM       string    `json:"asm"`
+	Hex       string    `json:"hex"`
+	ReqSigs   int64     `json:"reqSigs,omitempty"`
+	Type      int64     `json:"type"`
+	Addresses []string  `json:"addresses,omitempty"`
+	OpReturn  *OpReturn `json:"opReturn"`
 }
 
 // A ScriptSig represents a scriptsyg
 type ScriptSig struct {
-	Asm string `json:"asm"`
+	ASM string `json:"asm"`
 	Hex string `json:"hex"`
 }
 
