@@ -43,13 +43,13 @@ func (b *Bitcoind) call(method string, params []interface{}) (rpcResponse, error
 	// Check cache
 	value, found := b.Storage.Get(key)
 	if found {
-		fmt.Printf("CACHED: ")
+		// fmt.Printf("CACHED: ")
 		return value.(rpcResponse), nil
 	}
 
 	// Combine memoized function with a cache store
 	value, err, _ := b.group.Do(key, func() (interface{}, error) {
-		fmt.Printf("EXECED: ")
+		// fmt.Printf("EXECED: ")
 		data, innerErr := b.client.call(method, params)
 
 		if innerErr == nil {
