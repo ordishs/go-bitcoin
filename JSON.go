@@ -305,7 +305,7 @@ type ScriptPubKey struct {
 	ASM       string    `json:"asm"`
 	Hex       string    `json:"hex"`
 	ReqSigs   int64     `json:"reqSigs,omitempty"`
-	Type      int64     `json:"type"`
+	Type      string    `json:"type"`
 	Addresses []string  `json:"addresses,omitempty"`
 	OpReturn  *OpReturn `json:"opReturn"`
 }
