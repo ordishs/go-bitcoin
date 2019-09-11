@@ -99,13 +99,27 @@ func TestGetPeerInfo(t *testing.T) {
 	t.Logf("%#v", res)
 }
 
-func TestGetRawMempool(t *testing.T) {
+func TestGetRawMempoolWithDetails(t *testing.T) {
 	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	res, err := b.GetRawMempool()
+	res, err := b.GetRawMempool(true)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("%s", string(res))
+}
+
+func TestGetRawMempoolNoDetails(t *testing.T) {
+	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	res, err := b.GetRawMempool(false)
 	if err != nil {
 		t.Error(err)
 		t.FailNow()

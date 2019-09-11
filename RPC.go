@@ -181,8 +181,8 @@ func (b *Bitcoind) GetMempoolInfo() (info MempoolInfo, err error) {
 }
 
 // GetRawMempool returns the number of connections to other nodes.
-func (b *Bitcoind) GetRawMempool() (raw []byte, err error) {
-	p := []interface{}{true}
+func (b *Bitcoind) GetRawMempool(details bool) (raw []byte, err error) {
+	p := []interface{}{details}
 	r, err := b.call("getrawmempool", p)
 	if err != nil {
 		return
