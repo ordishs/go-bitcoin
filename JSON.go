@@ -283,7 +283,6 @@ type Vout struct {
 	Value        float64      `json:"value"`
 	N            int          `json:"n"`
 	ScriptPubKey ScriptPubKey `json:"scriptPubKey"`
-	Addresses    []string     `json:"addresses"`
 }
 
 // Vin represent an IN value
