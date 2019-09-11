@@ -110,7 +110,7 @@ func TestGetRawMempool(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	t.Logf("%#v", res)
+	t.Logf("%s", string(res))
 }
 
 func TestGetMempoolInfo(t *testing.T) {
