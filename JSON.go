@@ -227,7 +227,7 @@ type Block struct {
 	Confirmations     int64    `json:"confirmations"`
 	Size              uint64   `json:"size"`
 	Height            uint64   `json:"height"`
-	Version           uint64   `json:"version"`
+	Version           int64    `json:"version"`
 	VersionHex        string   `json:"versionHex"`
 	MerkleRoot        string   `json:"merkleroot"`
 	TxCount           uint64   `json:"txcount"`
@@ -267,7 +267,7 @@ type RawTransaction struct {
 	Hex           string `json:"hex"`
 	TxID          string `json:"txid"`
 	Hash          string `json:"hash"`
-	Version       uint32 `json:"version"`
+	Version       int32  `json:"version"`
 	Size          uint32 `json:"size"`
 	LockTime      uint32 `json:"locktime"`
 	Vin           []Vin  `json:"vin"`
