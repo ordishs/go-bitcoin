@@ -295,6 +295,24 @@ func (b *Bitcoind) GetBlock(blockHash string) (block *Block, err error) {
 	return
 }
 
+// GetBlockOverview returns basic information about the block with the given hash.
+func (b *Bitcoind) GetBlockOverview(blockHash string) (block *BlockOverview, err error) {
+	r, err := b.call("getblock", []interface{}{blockHash})
+
+	if err != nil {
+		return
+	}
+
+	if r.Err != nil {
+		rr := r.Err.(map[string]interface{})
+		err = fmt.Errorf("ERROR %s: %s", rr["code"], rr["message"])
+		return
+	}
+
+	err = json.Unmarshal(r.Result, &block)
+	return
+}
+
 // GetBlockHex returns information about the block with the given hash.
 func (b *Bitcoind) GetBlockHex(blockHash string) (raw *string, err error) {
 	r, err := b.call("getblock", []interface{}{blockHash, 0})

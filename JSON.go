@@ -247,6 +247,28 @@ type Block struct {
 	Pagination *BlockPage      `json:"pages"`
 }
 
+// BlockOverview struct
+type BlockOverview struct {
+	Hash              string  `json:"hash"`
+	Confirmations     int64   `json:"confirmations"`
+	Size              uint64  `json:"size"`
+	Height            uint64  `json:"height"`
+	Version           int64   `json:"version"`
+	VersionHex        string  `json:"versionHex"`
+	MerkleRoot        string  `json:"merkleroot"`
+	TxCount           uint64  `json:"txcount"`
+	Time              uint64  `json:"time"`
+	MedianTime        uint64  `json:"mediantime"`
+	Nonce             uint64  `json:"nonce"`
+	Bits              string  `json:"bits"`
+	Difficulty        float64 `json:"difficulty"`
+	Chainwork         string  `json:"chainwork"`
+	PreviousBlockHash string  `json:"previousblockhash"`
+	NextBlockHash     string  `json:"nextblockhash"`
+	// extra properties
+	TotalFees float64 `json:"totalFees"`
+}
+
 // BlockPage to store links
 type BlockPage struct {
 	URI  []string `json:"uri"`
