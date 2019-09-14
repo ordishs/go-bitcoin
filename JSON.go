@@ -249,14 +249,14 @@ type Block struct {
 
 // BlockOverview struct
 type BlockOverview struct {
-	Hash              string  `json:"hash"`
-	Confirmations     int64   `json:"confirmations"`
-	Size              uint64  `json:"size"`
-	Height            uint64  `json:"height"`
-	Version           int64   `json:"version"`
-	VersionHex        string  `json:"versionHex"`
-	MerkleRoot        string  `json:"merkleroot"`
-	TxCount           uint64  `json:"txcount"`
+	Hash          string `json:"hash"`
+	Confirmations int64  `json:"confirmations"`
+	Size          uint64 `json:"size"`
+	Height        uint64 `json:"height"`
+	Version       int64  `json:"version"`
+	VersionHex    string `json:"versionHex"`
+	MerkleRoot    string `json:"merkleroot"`
+	// TxCount           uint64  `json:"txcount"`
 	Time              uint64  `json:"time"`
 	MedianTime        uint64  `json:"mediantime"`
 	Nonce             uint64  `json:"nonce"`
@@ -265,8 +265,6 @@ type BlockOverview struct {
 	Chainwork         string  `json:"chainwork"`
 	PreviousBlockHash string  `json:"previousblockhash"`
 	NextBlockHash     string  `json:"nextblockhash"`
-	// extra properties
-	TotalFees float64 `json:"totalFees"`
 }
 
 // BlockPage to store links
