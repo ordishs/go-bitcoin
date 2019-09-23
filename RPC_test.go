@@ -1,6 +1,8 @@
 package bitcoin
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestGetBlockChainInfo(t *testing.T) {
 	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
@@ -328,7 +330,9 @@ func TestGetBlockTemplate(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	template, err := b.GetBlockTemplate()
+	// Passing true as an argument will set the segwit rule.  This is necessary for
+	// BTC and ignored for BCH and BSV.
+	template, err := b.GetBlockTemplate(true)
 	if err != nil {
 		t.Error(err)
 		t.FailNow()

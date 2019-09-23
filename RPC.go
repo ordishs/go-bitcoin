@@ -346,11 +346,14 @@ func (b *Bitcoind) GetRawTransactionHex(txID string) (rawTx *string, err error) 
 }
 
 // GetBlockTemplate comment
-func (b *Bitcoind) GetBlockTemplate() (template *BlockTemplate, err error) {
-	params := gbtParams{
-		Mode:         "",
-		Capabilities: []string{},
-		Rules:        []string{"segwit"},
+func (b *Bitcoind) GetBlockTemplate(includeSegwit bool) (template *BlockTemplate, err error) {
+	params := gbtParams{}
+	if includeSegwit {
+		params = gbtParams{
+			Mode:         "",
+			Capabilities: []string{},
+			Rules:        []string{"segwit"},
+		}
 	}
 
 	r, err := b.call("getblocktemplate", []interface{}{params})
