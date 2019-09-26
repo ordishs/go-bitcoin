@@ -389,3 +389,17 @@ func TestSubmitMiningSolution(t *testing.T) {
 	}
 	t.Logf("%#v", template)
 }
+
+func TestDecodeRawTransactionHex(t *testing.T) {
+	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	tx, err := b.DecodeRawTransaction("01000000017235e81ebaccd9fd4d14e3381825c6ac37b56096320e1c54fe00d45e124eca0a0000000000ffffffff01f03a0000000000001976a91424575db8999bc36cd89999de7172b64df2a8893588ac00000000")
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("%#v", tx)
+}

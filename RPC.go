@@ -416,3 +416,13 @@ func (b *Bitcoind) GetDifficulty() (difficulty float64, err error) {
 	difficulty, err = strconv.ParseFloat(string(r.Result), 64)
 	return
 }
+
+// DecodeRawTransaction comment
+func (b *Bitcoind) DecodeRawTransaction(txHex string) (string, error) {
+	r, err := b.call("decoderawtransaction", []interface{}{txHex})
+	if err != nil {
+		return "", err
+	}
+
+	return string(r.Result), nil
+}
