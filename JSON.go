@@ -300,7 +300,7 @@ type RawTransaction struct {
 
 // Vout represent an OUT value
 type Vout struct {
-	Value        uint64       `json:"value"`
+	Value        float64      `json:"value"`
 	N            int          `json:"n"`
 	ScriptPubKey ScriptPubKey `json:"scriptPubKey"`
 }
