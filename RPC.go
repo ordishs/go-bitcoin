@@ -466,3 +466,13 @@ func (b *Bitcoind) DecodeRawTransaction(txHex string) (string, error) {
 
 	return string(r.Result), nil
 }
+
+// GetTxOut comment
+func (b *Bitcoind) GetTxOut(txHex string, vout int, includeMempool bool) (string, error) {
+	r, err := b.call("gettxout", []interface{}{txHex, vout, includeMempool})
+	if err != nil {
+		return "", err
+	}
+
+	return string(r.Result), nil
+}
