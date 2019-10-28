@@ -19,7 +19,7 @@ func (i *input) toHex() []byte {
 
 	b = append(b, cryptolib.ReverseBytes(i.hash[:])...)
 	b = append(b, cryptolib.GetLittleEndianBytes(i.index, 4)...)
-	b = append(b, cryptolib.VarInt(len(i.unlockingScript))...)
+	b = append(b, cryptolib.VarInt(uint64(len(i.unlockingScript)))...)
 	b = append(b, i.unlockingScript...)
 	b = append(b, cryptolib.GetLittleEndianBytes(i.sequence, 4)...)
 
@@ -68,7 +68,7 @@ func (o *output) toHex() []byte {
 	binary.LittleEndian.PutUint64(value, o.value)
 
 	b = append(b, value...)
-	b = append(b, cryptolib.VarInt(len(o.lockingScript))...)
+	b = append(b, cryptolib.VarInt(uint64(len(o.lockingScript)))...)
 	b = append(b, o.lockingScript...)
 
 	return b
@@ -169,12 +169,12 @@ func (t *transaction) ToHex() []byte {
 	var b []byte
 
 	b = append(b, cryptolib.GetLittleEndianBytes(uint32(t.Version), 4)...)
-	b = append(b, cryptolib.VarInt(t.InputCount())...)
+	b = append(b, cryptolib.VarInt(uint64(t.InputCount()))...)
 	for _, input := range t.Inputs {
 		b = append(b, input.toHex()...)
 	}
 
-	b = append(b, cryptolib.VarInt(t.OutputCount())...)
+	b = append(b, cryptolib.VarInt(uint64(t.OutputCount()))...)
 	for _, output := range t.Outputs {
 		b = append(b, output.toHex()...)
 	}
