@@ -417,3 +417,20 @@ func TestDecodeRawTransactionHex(t *testing.T) {
 	}
 	t.Logf("%#v", tx)
 }
+
+func TestListUnspent(t *testing.T) {
+	b, err := New("localhost", 18332, "bitcoin", "bitcoin", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	tx, err := b.ListUnspent([]string{"n38vndTAZKFzc3BtPAJ4mecp44UwAZVski"})
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+
+	for _, utxo := range tx {
+		t.Logf("%#v", utxo)
+	}
+}

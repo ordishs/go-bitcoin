@@ -494,3 +494,17 @@ func (b *Bitcoind) GetTxOut(txHex string, vout int, includeMempool bool) (string
 
 	return string(r.Result), nil
 }
+
+// ListUnspent comment
+func (b *Bitcoind) ListUnspent(addresses []string) (res []*UnspentTransaction, err error) {
+	var minConf uint32 = 0
+	var maxConf uint32 = 9999999
+
+	r, err := b.call("listunspent", []interface{}{minConf, maxConf, addresses})
+	if err != nil {
+		return
+	}
+
+	json.Unmarshal(r.Result, &res)
+	return
+}

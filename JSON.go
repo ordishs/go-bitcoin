@@ -338,6 +338,16 @@ type ScriptSig struct {
 	Hex string `json:"hex"`
 }
 
+// UnspentTransaction type
+type UnspentTransaction struct {
+	TXID          string  `json:"txid"`
+	Vout          uint32  `json:"vout"`
+	Address       string  `json:"address"`
+	ScriptPubKey  string  `json:"scriptPubKey"`
+	Amount        float64 `json:"amount"`
+	Confirmations uint32  `json:"confirmations"`
+}
+
 // Error comment
 type Error struct {
 	Code    float64
