@@ -30,7 +30,7 @@ type GetInfo struct {
 	TimeOffset        int64   `json:"timeoffset"`
 	Connections       int32   `json:"connections"`
 	Proxy             string  `json:"proxy"`
-	Difficulty        int64   `json:"difficulty"`
+	Difficulty        float64 `json:"difficulty"`
 	TestNet           bool    `json:"testnet"`
 	STN               bool    `json:"stn"`
 	KeyPoolOldest     int64   `json:"keypoololdest"`
