@@ -20,6 +20,28 @@ type BlockchainInfo struct {
 	ChainWork            string  `json:"chainwork,omitempty"`
 }
 
+// GetInfo comment
+type GetInfo struct {
+	Version           int32   `json:"version"`
+	ProtocolVersion   int32   `json:"protocolversion"`
+	WalletVersion     int32   `json:"walletversion"`
+	Balance           float64 `json:"balance"`
+	Blocks            int32   `json:"blocks"`
+	TimeOffset        int64   `json:"timeoffset"`
+	Connections       int32   `json:"connections"`
+	Proxy             string  `json:"proxy"`
+	Difficulty        float64 `json:"difficulty"`
+	TestNet           bool    `json:"testnet"`
+	STN               bool    `json:"stn"`
+	KeyPoolOldest     int64   `json:"keypoololdest"`
+	KeyPoolSize       int32   `json:"keypoolsize"`
+	PayTXFee          float64 `json:"paytxfee"`
+	RelayFee          float64 `json:"relayfee"`
+	Errors            string  `json:"errors"`
+	MaxBlockSize      int64   `json:"maxblocksize"`
+	MaxMinedBlockSize int64   `json:"maxminedblocksize"`
+}
+
 // Network comment
 type Network struct {
 	Name                       string `json:"name"`
