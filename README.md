@@ -46,6 +46,9 @@ SubmitBlock(hexData string)
 SubmitMiningSolution(candidateID string, nonce uint32,
                      coinbase string, time uint32, version uint32)
 GetDifficulty()
+DecodeRawTransaction(txHex string)
+GetTxOut(txHex string, vout int, includeMempool bool)
+ListUnspent(addresses []string)
 ```
 
 ## ZMQ
