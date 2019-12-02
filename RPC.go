@@ -294,6 +294,23 @@ func (b *Bitcoind) SendRawTransaction(hex string) (txid string, err error) {
 	return
 }
 
+// SignRawTransaction comment
+func (b *Bitcoind) SignRawTransaction(hex string) (sr *SignRawTransactionResponse, err error) {
+	r, err := b.call("signrawtransaction", []interface{}{hex})
+	if err != nil {
+		return
+	}
+
+	if r.Err != nil {
+		rr := r.Err.(map[string]interface{})
+		err = fmt.Errorf("ERROR %s: %s", rr["code"], rr["message"])
+		return
+	}
+
+	err = json.Unmarshal(r.Result, &sr)
+	return
+}
+
 // GetBlock returns information about the block with the given hash.
 func (b *Bitcoind) GetBlock(blockHash string) (block *Block, err error) {
 	r, err := b.call("getblock", []interface{}{blockHash})
@@ -523,5 +540,12 @@ func (b *Bitcoind) ListUnspent(addresses []string) (res []*UnspentTransaction, e
 	}
 
 	json.Unmarshal(r.Result, &res)
+
+	for _, utxo := range res {
+		if utxo.Amount > 0 && utxo.Satoshis == 0 {
+			utxo.Satoshis = uint64(utxo.Amount * 100000000)
+		}
+	}
+
 	return
 }

@@ -367,7 +367,14 @@ type UnspentTransaction struct {
 	Address       string  `json:"address"`
 	ScriptPubKey  string  `json:"scriptPubKey"`
 	Amount        float64 `json:"amount"`
+	Satoshis      uint64  `json:"satoshis"`
 	Confirmations uint32  `json:"confirmations"`
+}
+
+// SignRawTransactionResponse struct
+type SignRawTransactionResponse struct {
+	Hex      string `json:"hex"`
+	Complete bool   `json:"complete"`
 }
 
 // Error comment

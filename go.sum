@@ -2,11 +2,15 @@ bitbucket.org/simon_ordish/cryptolib v0.0.0-20190702201316-c0cfb1f491b0 h1:Gs9t0
 bitbucket.org/simon_ordish/cryptolib v0.0.0-20190702201316-c0cfb1f491b0/go.mod h1:itcDgJILbx6kOziRyHorpi0gbkBbYk5/CfTa5pSyIVc=
 bitbucket.org/simon_ordish/cryptolib v1.0.4 h1:VJhucuSbMOz0Y+lDNtF+/6Mq2RjyKUWwcIKZaNge0Tw=
 bitbucket.org/simon_ordish/cryptolib v1.0.4/go.mod h1:LZxCg1lYpXijtFkR31c/G0wF7PDWNKtdZ7O/tlPR1CE=
+bitbucket.org/simon_ordish/cryptolib v1.0.12 h1:90KWk6O4Ifx5z85hZw3b04mJJ3PpAmTrFRqCdF8DyCM=
+bitbucket.org/simon_ordish/cryptolib v1.0.12/go.mod h1:LZxCg1lYpXijtFkR31c/G0wF7PDWNKtdZ7O/tlPR1CE=
 github.com/aead/siphash v1.0.1/go.mod h1:Nywa3cDsYNNK3gaciGTWPwHt0wlpNV15vwmswBAUSII=
 github.com/btcsuite/btcd v0.0.0-20190926002857-ba530c4abb35 h1:o2mPiVrkVzpBg/Q+lSfuf/92pEgsSIJvsQ13DyHs/3A=
 github.com/btcsuite/btcd v0.0.0-20190926002857-ba530c4abb35/go.mod h1:3J08xEfcugPacsc34/LKRU2yO7YmuT8yt28J8k2+rrI=
 github.com/btcsuite/btcd v0.20.0-beta h1:DnZGUjFbRkpytojHWwy6nfUSA7vFrzWXDLpFNzt74ZA=
 github.com/btcsuite/btcd v0.20.0-beta/go.mod h1:wVuoA8VJLEcwgqHBwHmzLRazpKxTv13Px/pDuV7OomQ=
+github.com/btcsuite/btcd v0.20.1-beta h1:Ik4hyJqN8Jfyv3S4AGBOmyouMsYE3EdYODkMbQjwPGw=
+github.com/btcsuite/btcd v0.20.1-beta/go.mod h1:wVuoA8VJLEcwgqHBwHmzLRazpKxTv13Px/pDuV7OomQ=
 github.com/btcsuite/btclog v0.0.0-20170628155309-84c8d2346e9f/go.mod h1:TdznJufoqS23FtqVCzL0ZqgP5MqXbb4fg/WgDys70nA=
 github.com/btcsuite/btcutil v0.0.0-20190425235716-9e5f4b9a998d h1:yJzD/yFppdVCf6ApMkVy8cUxV0XrxdP9rVf6D87/Mng=
 github.com/btcsuite/btcutil v0.0.0-20190425235716-9e5f4b9a998d/go.mod h1:+5NJ2+qvTyV9exUAL/rxXi3DcLg2Ts+ymUAY5y4NvMg=
@@ -45,6 +49,8 @@ golang.org/x/crypto v0.0.0-20191002192127-34f69633bfdc h1:c0o/qxkaO2LF5t6fQrT4b5
 golang.org/x/crypto v0.0.0-20191002192127-34f69633bfdc/go.mod h1:yigFU9vqHzYiE8UmvKecakEJjdnWj3jj499lnFckfCI=
 golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550 h1:ObdrDkeb4kJdCP557AjRjq69pTHfNouLtWZG7j9rPN8=
 golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550/go.mod h1:yigFU9vqHzYiE8UmvKecakEJjdnWj3jj499lnFckfCI=
+golang.org/x/crypto v0.0.0-20191202143827-86a70503ff7e h1:egKlR8l7Nu9vHGWbcUV8lqR4987UfUbBd7GbhqGzNYU=
+golang.org/x/crypto v0.0.0-20191202143827-86a70503ff7e/go.mod h1:LzIPMQfyMNhhGPhUkYOs5KpL4U8rLKemX1yGLhDgUto=
 golang.org/x/net v0.0.0-20180906233101-161cd47e91fd/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
 golang.org/x/net v0.0.0-20190404232315-eb5bcb51f2a3/go.mod h1:t9HGtf8HONx5eT2rtn7q6eTqICYqUVnKs3thJo3Qplg=
 golang.org/x/sync v0.0.0-20180314180146-1d60e4601c6f/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
