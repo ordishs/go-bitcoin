@@ -3,10 +3,10 @@ module github.com/ordishs/go-bitcoin
 go 1.13
 
 replace (
-	bitbucket.org/nchteamnch/common v1.0.3 => ../common
-	bitbucket.org/simon_ordish/cryptolib v1.0.33 => ../cryptolib
-	github.com/ordishs/go-bitcoin v1.0.16 => ../go-bitcoin
-	github.com/ordishs/gocore v1.0.7 => ../gocore
+	bitbucket.org/nchteamnch/common => ../common
+	bitbucket.org/simon_ordish/cryptolib => ../cryptolib
+	github.com/ordishs/go-bitcoin => ../go-bitcoin
+	github.com/ordishs/gocore => ../gocore
 )
 
 require (
