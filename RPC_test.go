@@ -434,3 +434,18 @@ func TestListUnspent(t *testing.T) {
 		t.Logf("%#v", utxo)
 	}
 }
+
+func TestSendToAddress(t *testing.T) {
+	b, err := New("localhost", 18332, "bitcoin", "bitcoin", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	tx, err := b.SendToAddress("n38vndTAZKFzc3BtPAJ4mecp44UwAZVski", 0.01)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+
+	t.Log(tx)
+}
