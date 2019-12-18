@@ -549,3 +549,14 @@ func (b *Bitcoind) ListUnspent(addresses []string) (res []*UnspentTransaction, e
 
 	return
 }
+
+// SendToAddress comment
+func (b *Bitcoind) SendToAddress(address string, amount float64) (string, error) {
+	r, err := b.call("sendtoaddress", []interface{}{address, amount})
+	if err != nil {
+		return "", err
+	}
+
+	json.Unmarshal(r.Result, &template)
+	return string(r.Result), nil
+}
