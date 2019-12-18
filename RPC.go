@@ -557,5 +557,8 @@ func (b *Bitcoind) SendToAddress(address string, amount float64) (string, error)
 		return "", err
 	}
 
-	return string(r.Result), nil
+	var txid string
+	json.Unmarshal(r.Result, &txid)
+
+	return txid, nil
 }
