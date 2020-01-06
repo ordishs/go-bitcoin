@@ -29,42 +29,49 @@ func NewZMQ(host string, port int) *ZMQ {
 	}
 
 	go func() {
-		zmq.socket = zmq4.NewSub(context.Background(), zmq4.WithID(zmq4.SocketIdentity("sub")))
-		defer zmq.socket.Close()
-
-		if err := zmq.socket.Dial(zmq.address); err != nil {
-			zmq.err = err
-			return
-		}
-
-		if err := zmq.socket.SetOption(zmq4.OptionSubscribe, "hash"); err != nil {
-			zmq.err = fmt.Errorf("%+v", err)
-			return
-		}
-
-		log.Printf("ZMQ: Subscribing to %s", zmq.address)
-
-		//  0MQ is so fast, we need to wait a while...
-		time.Sleep(time.Second)
-
 		for {
-			msg, err := zmq.socket.Recv()
-			if err != nil {
-				log.Println(err)
-			} else {
-				if zmq.connected == false {
-					zmq.connected = true
-					log.Printf("ZMQ: Subscription to %s established\n", zmq.address)
-				}
+			zmq.socket = zmq4.NewSub(context.Background(), zmq4.WithID(zmq4.SocketIdentity("sub")))
+			defer zmq.socket.Close()
 
-				// log.Printf("%s: %s", string(msg.Frames[0]), hex.EncodeToString(msg.Frames[1]))
-				zmq.mu.RLock()
-				subscribers := zmq.subscriptions[string(msg.Frames[0])]
-				for _, subscriber := range subscribers {
-					subscriber <- hex.EncodeToString(msg.Frames[1])
-				}
-				zmq.mu.RUnlock()
+			if err := zmq.socket.Dial(zmq.address); err != nil {
+				zmq.err = err
+				return
 			}
+
+			if err := zmq.socket.SetOption(zmq4.OptionSubscribe, "hash"); err != nil {
+				zmq.err = fmt.Errorf("%+v", err)
+				return
+			}
+
+			log.Printf("ZMQ: Subscribing to %s", zmq.address)
+
+			//  0MQ is so fast, we need to wait a while...
+			time.Sleep(time.Second)
+
+			for {
+				msg, err := zmq.socket.Recv()
+				if err != nil {
+					log.Printf("ERROR from zmq.socket.Recv() - %v\n", err)
+					break
+				} else {
+					if zmq.connected == false {
+						zmq.connected = true
+						log.Printf("ZMQ: Subscription to %s established\n", zmq.address)
+					}
+
+					// log.Printf("%s: %s", string(msg.Frames[0]), hex.EncodeToString(msg.Frames[1]))
+					zmq.mu.RLock()
+					subscribers := zmq.subscriptions[string(msg.Frames[0])]
+					for _, subscriber := range subscribers {
+						subscriber <- hex.EncodeToString(msg.Frames[1])
+					}
+					zmq.mu.RUnlock()
+				}
+			}
+
+			zmq.socket.Close()
+			log.Printf("Attempting to re-establish ZMQ connection in 30 seconds...")
+			time.Sleep(30 * time.Second)
 		}
 	}()
 
