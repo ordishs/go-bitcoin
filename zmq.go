@@ -70,6 +70,7 @@ func NewZMQ(host string, port int) *ZMQ {
 			}
 
 			zmq.socket.Close()
+			zmq.connected = false
 			log.Printf("Attempting to re-establish ZMQ connection in 30 seconds...")
 			time.Sleep(30 * time.Second)
 		}
