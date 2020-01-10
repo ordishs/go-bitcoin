@@ -289,6 +289,23 @@ type BlockOverview struct {
 	NextBlockHash     string  `json:"nextblockhash"`
 }
 
+// BlockHeader comment
+type BlockHeader struct {
+	Hash    			string `json:"hash"`
+	Confirmations 		int64 `json:"confirmations"`
+	Height 				uint64 `json:"height"`
+	Version  			uint64 `json:"version"`
+	VersionHex 			string `json:"versionHex"`
+	MerkleRoot 			string `json:"merkleroot"`
+	Time 				uint64 `json:"time"`
+	MedianTime 			uint64 `json:"mediantime"`
+	Nonce 				uint64 `json:"nonce"`
+	Bits 				string `json:"bits"`
+	Difficulty 			float64 `json:"difficulty"`
+	Chainwork 			string `json:"chainwork"`
+	PreviousBlockHash 	string `json:"previousblockhash"`
+}
+
 // BlockPage to store links
 type BlockPage struct {
 	URI  []string `json:"uri"`
