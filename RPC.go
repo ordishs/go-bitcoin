@@ -365,6 +365,24 @@ func (b *Bitcoind) GetBlockHeaderHex(blockHash string) (blockHeader *string, err
 	return
 }
 
+// GetBlockHeader returns the block header for the given hash.
+func (b *Bitcoind) GetBlockHeader(blockHash string) (blockHeader *BlockHeader, err error) {
+	r, err := b.call("getblockheader", []interface{}{blockHash})
+
+	if err != nil {
+		return
+	}
+
+	if r.Err != nil {
+		rr := r.Err.(map[string]interface{})
+		err = fmt.Errorf("ERROR %s: %s", rr["code"], rr["message"])
+		return
+	}
+
+	err = json.Unmarshal(r.Result, &blockHeader)
+	return
+}
+
 // GetBlockHex returns information about the block with the given hash.
 func (b *Bitcoind) GetBlockHex(blockHash string) (raw *string, err error) {
 	r, err := b.call("getblock", []interface{}{blockHash, 0})
