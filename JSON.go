@@ -269,6 +269,30 @@ type Block struct {
 	Pagination *BlockPage      `json:"pages"`
 }
 
+// Block2 struct
+type Block2 struct {
+	Hash              string   `json:"hash"`
+	Size              int      `json:"size"`
+	Height            int      `json:"height"`
+	Version           uint32   `json:"version"`
+	VersionHex        string   `json:"versionHex"`
+	MerkleRoot        string   `json:"merkleroot"`
+	TxCount           uint64   `json:"txcount"`
+	Tx                []string `json:"tx"`
+	Time              uint32   `json:"time"`
+	MedianTime        uint32   `json:"mediantime"`
+	Nonce             uint32   `json:"nonce"`
+	Bits              string   `json:"bits"`
+	Difficulty        float64  `json:"difficulty"`
+	Chainwork         string   `json:"chainwork"`
+	PreviousBlockHash string   `json:"previousblockhash"`
+	NextBlockHash     string   `json:"nextblockhash"`
+	BlockSubsidy      uint64   `json:"blockSubsidy"`
+	BlockReward       uint64   `json:"blockReward"`
+	USDPrice          float64  `json:"usdPrice"`
+	Miner             string   `json:"miner"`
+}
+
 // BlockOverview struct
 type BlockOverview struct {
 	Hash          string `json:"hash"`
@@ -291,19 +315,19 @@ type BlockOverview struct {
 
 // BlockHeader comment
 type BlockHeader struct {
-	Hash    			string `json:"hash"`
-	Confirmations 		int64 `json:"confirmations"`
-	Height 				uint64 `json:"height"`
-	Version  			uint64 `json:"version"`
-	VersionHex 			string `json:"versionHex"`
-	MerkleRoot 			string `json:"merkleroot"`
-	Time 				uint64 `json:"time"`
-	MedianTime 			uint64 `json:"mediantime"`
-	Nonce 				uint64 `json:"nonce"`
-	Bits 				string `json:"bits"`
-	Difficulty 			float64 `json:"difficulty"`
-	Chainwork 			string `json:"chainwork"`
-	PreviousBlockHash 	string `json:"previousblockhash"`
+	Hash              string  `json:"hash"`
+	Confirmations     int64   `json:"confirmations"`
+	Height            uint64  `json:"height"`
+	Version           uint64  `json:"version"`
+	VersionHex        string  `json:"versionHex"`
+	MerkleRoot        string  `json:"merkleroot"`
+	Time              uint64  `json:"time"`
+	MedianTime        uint64  `json:"mediantime"`
+	Nonce             uint64  `json:"nonce"`
+	Bits              string  `json:"bits"`
+	Difficulty        float64 `json:"difficulty"`
+	Chainwork         string  `json:"chainwork"`
+	PreviousBlockHash string  `json:"previousblockhash"`
 }
 
 // BlockPage to store links

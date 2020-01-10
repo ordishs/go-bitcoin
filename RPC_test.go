@@ -1,6 +1,7 @@
 package bitcoin
 
 import (
+	"encoding/hex"
 	"testing"
 )
 
@@ -448,4 +449,27 @@ func TestSendToAddress(t *testing.T) {
 	}
 
 	t.Log(tx)
+}
+
+func TestGetRawBlock(t *testing.T) {
+	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	blockBytes, err := b.GetRawBlock("00000000839a8e6886ab5951d76f411475428afc90947ee320161bbf18eb6048")
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+
+	t.Log(hex.EncodeToString(blockBytes))
+
+	block, err := b.GetBlock("00000000839a8e6886ab5951d76f411475428afc90947ee320161bbf18eb6048")
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+
+	t.Logf("%+v", block)
 }

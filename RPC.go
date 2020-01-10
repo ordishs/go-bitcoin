@@ -1,6 +1,7 @@
 package bitcoin
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -327,6 +328,27 @@ func (b *Bitcoind) GetBlock(blockHash string) (block *Block, err error) {
 
 	err = json.Unmarshal(r.Result, &block)
 	return
+}
+
+// GetRawBlock returns the raw bytes of the block with the given hash.
+func (b *Bitcoind) GetRawBlock(blockHash string) ([]byte, error) {
+	r, err := b.call("getblock", []interface{}{blockHash, 0})
+	if err != nil {
+		return nil, err
+	}
+
+	var rawHex string
+	err = json.Unmarshal(r.Result, &rawHex)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := hex.DecodeString(rawHex)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
 }
 
 // GetBlockOverview returns basic information about the block with the given hash.
