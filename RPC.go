@@ -287,7 +287,7 @@ func (b *Bitcoind) GetBlockHash(blockHeight int) (blockHash string, err error) {
 
 // SendRawTransaction comment
 func (b *Bitcoind) SendRawTransaction(hex string) (txid string, err error) {
-	r, err := b.call("sendrawtransaction", []interface{}{hex})
+	r, err := b.call("sendrawtransaction", []interface{}{hex, true})
 	if err != nil {
 		return "", err
 	}
@@ -297,7 +297,7 @@ func (b *Bitcoind) SendRawTransaction(hex string) (txid string, err error) {
 
 // SignRawTransaction comment
 func (b *Bitcoind) SignRawTransaction(hex string) (sr *SignRawTransactionResponse, err error) {
-	r, err := b.call("signrawtransaction", []interface{}{hex, true})
+	r, err := b.call("signrawtransaction", []interface{}{hex})
 	if err != nil {
 		return
 	}
