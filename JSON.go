@@ -328,6 +328,7 @@ type BlockHeader struct {
 	Difficulty        float64 `json:"difficulty"`
 	Chainwork         string  `json:"chainwork"`
 	PreviousBlockHash string  `json:"previousblockhash"`
+	NextBlockHash     string  `json:"nextblockhash"`
 }
 
 // BlockPage to store links
