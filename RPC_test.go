@@ -1,5 +1,7 @@
 package bitcoin
 
+// Force a new commit
+
 import (
 	"encoding/hex"
 	"testing"
