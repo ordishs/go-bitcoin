@@ -79,10 +79,21 @@ func NewZMQ(host string, port int) *ZMQ {
 	return zmq
 }
 
+func contains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
+}
+
 // Subscribe comment
 func (zmq *ZMQ) Subscribe(topic string, ch chan string) error {
-	if topic != "hashblock" && topic != "hashtx" {
-		return fmt.Errorf("topic must be %q or %q, received %q", "hashblock", "hashtx", topic)
+	topics := []string{"hashblock", "hashtx", "rawblock", "rawtx"}
+
+	if !contains(topics, topic) {
+		return fmt.Errorf("topic must be %+v, received %q", topics, topic)
 	}
 
 	zmq.mu.Lock()
@@ -102,8 +113,10 @@ func (zmq *ZMQ) Subscribe(topic string, ch chan string) error {
 
 // Unsubscribe comment
 func (zmq *ZMQ) Unsubscribe(topic string, ch chan string) error {
-	if topic != "hashblock" && topic != "hashtx" {
-		return fmt.Errorf("topic must be %q or %q, received %q", "hashblock", "hashtx", topic)
+	topics := []string{"hashblock", "hashtx", "rawblock", "rawtx"}
+
+	if !contains(topics, topic) {
+		return fmt.Errorf("topic must be %+v, received %q", topics, topic)
 	}
 
 	zmq.mu.Lock()
