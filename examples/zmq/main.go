@@ -9,7 +9,7 @@ import (
 func main() {
 	zmq := bitcoin.NewZMQ("localhost", 28332)
 
-	ch := make(chan string)
+	ch := make(chan []string)
 
 	go func() {
 		for c := range ch {
@@ -17,8 +17,11 @@ func main() {
 		}
 	}()
 
-	err := zmq.Subscribe("hashtx", ch)
-	if err != nil {
+	if err := zmq.Subscribe("hashtx", ch); err != nil {
+		log.Fatalln(err)
+	}
+
+	if err := zmq.Subscribe("hashblock", ch); err != nil {
 		log.Fatalln(err)
 	}
 

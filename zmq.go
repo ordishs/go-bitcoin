@@ -18,14 +18,14 @@ type ZMQ struct {
 	socket        zmq4.Socket
 	connected     bool
 	err           error
-	subscriptions map[string][]chan string
+	subscriptions map[string][]chan []string
 }
 
 // NewZMQ comment
 func NewZMQ(host string, port int) *ZMQ {
 	zmq := &ZMQ{
 		address:       fmt.Sprintf("tcp://%s:%d", host, port),
-		subscriptions: make(map[string][]chan string),
+		subscriptions: make(map[string][]chan []string),
 	}
 
 	go func() {
@@ -63,7 +63,7 @@ func NewZMQ(host string, port int) *ZMQ {
 					zmq.mu.RLock()
 					subscribers := zmq.subscriptions[string(msg.Frames[0])]
 					for _, subscriber := range subscribers {
-						subscriber <- hex.EncodeToString(msg.Frames[1])
+						subscriber <- []string{string(msg.Frames[0]), hex.EncodeToString(msg.Frames[1])}
 					}
 					zmq.mu.RUnlock()
 				}
@@ -89,8 +89,8 @@ func contains(s []string, e string) bool {
 }
 
 // Subscribe comment
-func (zmq *ZMQ) Subscribe(topic string, ch chan string) error {
-	topics := []string{"hashblock", "hashtx", "rawblock", "rawtx"}
+func (zmq *ZMQ) Subscribe(topic string, ch chan []string) error {
+	topics := []string{"hashblock", "hashtx"}
 
 	if !contains(topics, topic) {
 		return fmt.Errorf("topic must be %+v, received %q", topics, topic)
@@ -112,8 +112,8 @@ func (zmq *ZMQ) Subscribe(topic string, ch chan string) error {
 }
 
 // Unsubscribe comment
-func (zmq *ZMQ) Unsubscribe(topic string, ch chan string) error {
-	topics := []string{"hashblock", "hashtx", "rawblock", "rawtx"}
+func (zmq *ZMQ) Unsubscribe(topic string, ch chan []string) error {
+	topics := []string{"hashblock", "hashtx"}
 
 	if !contains(topics, topic) {
 		return fmt.Errorf("topic must be %+v, received %q", topics, topic)
