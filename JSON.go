@@ -388,12 +388,13 @@ type OpReturn struct {
 
 // ScriptPubKey Comment
 type ScriptPubKey struct {
-	ASM       string    `json:"asm"`
-	Hex       string    `json:"hex"`
-	ReqSigs   int64     `json:"reqSigs,omitempty"`
-	Type      string    `json:"type"`
-	Addresses []string  `json:"addresses,omitempty"`
-	OpReturn  *OpReturn `json:"opReturn"`
+	ASM         string    `json:"asm"`
+	Hex         string    `json:"hex"`
+	ReqSigs     int64     `json:"reqSigs,omitempty"`
+	Type        string    `json:"type"`
+	Addresses   []string  `json:"addresses,omitempty"`
+	OpReturn    *OpReturn `json:"opReturn"`
+	IsTruncated []bool    `json:"isTruncated,omitempty"`
 }
 
 // A ScriptSig represents a scriptsyg
