@@ -394,7 +394,7 @@ type ScriptPubKey struct {
 	Type        string    `json:"type"`
 	Addresses   []string  `json:"addresses,omitempty"`
 	OpReturn    *OpReturn `json:"opReturn"`
-	IsTruncated bool      `json:"isTruncated,omitempty"`
+	IsTruncated bool      `json:"isTruncated"`
 }
 
 // A ScriptSig represents a scriptsyg
