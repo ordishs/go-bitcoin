@@ -295,6 +295,16 @@ func (b *Bitcoind) SendRawTransaction(hex string) (txid string, err error) {
 	return
 }
 
+// SendRawTransactionWithoutFeeCheck comment
+func (b *Bitcoind) SendRawTransactionWithoutFeeCheck(hex string) (txid string, err error) {
+	r, err := b.call("sendrawtransaction", []interface{}{hex, false, true})
+	if err != nil {
+		return "", err
+	}
+	json.Unmarshal(r.Result, &txid)
+	return
+}
+
 // SignRawTransaction comment
 func (b *Bitcoind) SignRawTransaction(hex string) (sr *SignRawTransactionResponse, err error) {
 	r, err := b.call("signrawtransaction", []interface{}{hex})
