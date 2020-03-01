@@ -360,6 +360,7 @@ type RawTransaction struct {
 	Confirmations uint32 `json:"confirmations,omitempty"`
 	Time          int64  `json:"time,omitempty"`
 	Blocktime     int64  `json:"blocktime,omitempty"`
+	BlockHeight   uint64 `json:"blockheight,omitempty"`
 }
 
 // Vout represent an OUT value
