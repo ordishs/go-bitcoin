@@ -34,7 +34,9 @@ func NewZMQ(host string, port int) *ZMQ {
 			defer zmq.socket.Close()
 
 			if err := zmq.socket.Dial(zmq.address); err != nil {
+				zmq.mu.Lock()
 				zmq.err = err
+				zmq.mu.Unlock()
 				return
 			}
 
