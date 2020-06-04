@@ -22,24 +22,26 @@ type BlockchainInfo struct {
 
 // GetInfo comment
 type GetInfo struct {
-	Version           int32   `json:"version"`
-	ProtocolVersion   int32   `json:"protocolversion"`
-	WalletVersion     int32   `json:"walletversion"`
-	Balance           float64 `json:"balance"`
-	Blocks            int32   `json:"blocks"`
-	TimeOffset        int64   `json:"timeoffset"`
-	Connections       int32   `json:"connections"`
-	Proxy             string  `json:"proxy"`
-	Difficulty        float64 `json:"difficulty"`
-	TestNet           bool    `json:"testnet"`
-	STN               bool    `json:"stn"`
-	KeyPoolOldest     int64   `json:"keypoololdest"`
-	KeyPoolSize       int32   `json:"keypoolsize"`
-	PayTXFee          float64 `json:"paytxfee"`
-	RelayFee          float64 `json:"relayfee"`
-	Errors            string  `json:"errors"`
-	MaxBlockSize      int64   `json:"maxblocksize"`
-	MaxMinedBlockSize int64   `json:"maxminedblocksize"`
+	Version                      int32   `json:"version"`
+	ProtocolVersion              int32   `json:"protocolversion"`
+	WalletVersion                int32   `json:"walletversion"`
+	Balance                      float64 `json:"balance"`
+	Blocks                       int32   `json:"blocks"`
+	TimeOffset                   int64   `json:"timeoffset"`
+	Connections                  int32   `json:"connections"`
+	Proxy                        string  `json:"proxy"`
+	Difficulty                   float64 `json:"difficulty"`
+	TestNet                      bool    `json:"testnet"`
+	STN                          bool    `json:"stn"`
+	KeyPoolOldest                int64   `json:"keypoololdest"`
+	KeyPoolSize                  int32   `json:"keypoolsize"`
+	PayTXFee                     float64 `json:"paytxfee"`
+	RelayFee                     float64 `json:"relayfee"`
+	Errors                       string  `json:"errors"`
+	MaxBlockSize                 int64   `json:"maxblocksize"`
+	MaxMinedBlockSize            int64   `json:"maxminedblocksize"`
+	MaxStackMemoryUsagePolicy    uint64  `json:"maxstackmemoryusagepolicy"`
+	MaxStackMemoryUsageConsensus uint64  `json:"maxstackmemoryusageconsensus"`
 }
 
 // Network comment
@@ -225,14 +227,16 @@ type BlockTemplate struct {
 
 // MiningCandidate comment
 type MiningCandidate struct {
-	ID            string   `json:"id"`
-	PreviousHash  string   `json:"prevhash"`
-	CoinbaseValue uint64   `json:"coinbaseValue"`
-	Version       uint32   `json:"version"`
-	Bits          string   `json:"nBits"`
-	CurTime       uint64   `json:"time"`
-	Height        uint32   `json:"height"`
-	MerkleProof   []string `json:"merkleProof"`
+	ID                  string   `json:"id"`
+	PreviousHash        string   `json:"prevhash"`
+	CoinbaseValue       uint64   `json:"coinbaseValue"`
+	Version             uint32   `json:"version"`
+	Bits                string   `json:"nBits"`
+	CurTime             uint64   `json:"time"`
+	Height              uint32   `json:"height"`
+	NumTx               uint32   `json:"num_tx"`
+	SizeWithoutCoinbase uint64   `json:"sizeWithoutCoinbase"`
+	MerkleProof         []string `json:"merkleProof"`
 }
 
 type submitMiningSolutionParams struct {
