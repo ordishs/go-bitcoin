@@ -220,9 +220,10 @@ type BlockTemplate struct {
 	SigOpLimit               int64         `json:"sigoplimit"`
 	VBRequired               int64         `json:"vbrequired"`
 	// extra mining candidate fields
-	IsMiningCandidate bool     `json:"isminingcandidate"`
-	MiningCandidateID string   `json:"miningcandidateid"`
-	MerkleBranches    []string `json:"merklebranches"`
+	IsMiningCandidate bool             `json:"-"`
+	MiningCandidateID string           `json:"-"`
+	MiningCandidate   *MiningCandidate `json:"-"`
+	MerkleBranches    []string         `json:"-"`
 }
 
 // MiningCandidate comment
