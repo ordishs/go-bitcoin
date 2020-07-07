@@ -336,6 +336,25 @@ type BlockHeader struct {
 	NextBlockHash     string  `json:"nextblockhash"`
 }
 
+// BlockHeaderAndCoinbase comment
+type BlockHeaderAndCoinbase struct {
+	Hash              string           `json:"hash"`
+	Confirmations     int64            `json:"confirmations"`
+	Height            uint64           `json:"height"`
+	Version           uint64           `json:"version"`
+	VersionHex        string           `json:"versionHex"`
+	MerkleRoot        string           `json:"merkleroot"`
+	Time              uint64           `json:"time"`
+	MedianTime        uint64           `json:"mediantime"`
+	Nonce             uint64           `json:"nonce"`
+	Bits              string           `json:"bits"`
+	Difficulty        float64          `json:"difficulty"`
+	Chainwork         string           `json:"chainwork"`
+	PreviousBlockHash string           `json:"previousblockhash"`
+	NextBlockHash     string           `json:"nextblockhash"`
+	Tx                []RawTransaction `json:"tx"`
+}
+
 // BlockPage to store links
 type BlockPage struct {
 	URI  []string `json:"uri"`

@@ -426,6 +426,17 @@ func (b *Bitcoind) GetBlockHex(blockHash string) (raw *string, err error) {
 	return
 }
 
+// GetBlockHeaderAndCoinbase returns information about the block with the given hash.
+func (b *Bitcoind) GetBlockHeaderAndCoinbase(blockHash string) (blockHeaderAndCoinbase *BlockHeaderAndCoinbase, err error) {
+	r, err := b.call("getblock", []interface{}{blockHash, 3})
+	if err != nil {
+		return
+	}
+
+	err = json.Unmarshal(r.Result, &blockHeaderAndCoinbase)
+	return
+}
+
 // GetRawTransaction returns raw transaction representation for given transaction id.
 func (b *Bitcoind) GetRawTransaction(txID string) (rawTx *RawTransaction, err error) {
 	if txID == "4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b" {
