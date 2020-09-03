@@ -18,14 +18,30 @@ type ZMQ struct {
 	socket        zmq4.Socket
 	connected     bool
 	err           error
+	topics        []string
 	subscriptions map[string][]chan []string
 }
 
 // NewZMQ comment
 func NewZMQ(host string, port int) *ZMQ {
+	return newZMQ(host, port, false)
+}
+
+// NewZMQWithRaw creates a bitcoin ZMQ listener with raw enabled
+func NewZMQWithRaw(host string, port int) *ZMQ {
+	return newZMQ(host, port, true)
+}
+
+func newZMQ(host string, port int, rawRequired bool) *ZMQ {
 	zmq := &ZMQ{
 		address:       fmt.Sprintf("tcp://%s:%d", host, port),
 		subscriptions: make(map[string][]chan []string),
+		topics:        []string{"hashblock", "hashtx"},
+	}
+
+	if rawRequired {
+		zmq.topics = append(zmq.topics, "rawblock")
+		zmq.topics = append(zmq.topics, "rawtx")
 	}
 
 	go func() {
@@ -43,6 +59,13 @@ func NewZMQ(host string, port int) *ZMQ {
 			if err := zmq.socket.SetOption(zmq4.OptionSubscribe, "hash"); err != nil {
 				zmq.err = fmt.Errorf("%+v", err)
 				return
+			}
+
+			if rawRequired {
+				if err := zmq.socket.SetOption(zmq4.OptionSubscribe, "raw"); err != nil {
+					zmq.err = fmt.Errorf("%+v", err)
+					return
+				}
 			}
 
 			log.Printf("ZMQ: Subscribing to %s", zmq.address)
@@ -92,10 +115,8 @@ func contains(s []string, e string) bool {
 
 // Subscribe comment
 func (zmq *ZMQ) Subscribe(topic string, ch chan []string) error {
-	topics := []string{"hashblock", "hashtx", "rawblock", "rawtx"}
-
-	if !contains(topics, topic) {
-		return fmt.Errorf("topic must be %+v, received %q", topics, topic)
+	if !contains(zmq.topics, topic) {
+		return fmt.Errorf("topic must be %+v, received %q", zmq.topics, topic)
 	}
 
 	zmq.mu.Lock()
@@ -115,10 +136,8 @@ func (zmq *ZMQ) Subscribe(topic string, ch chan []string) error {
 
 // Unsubscribe comment
 func (zmq *ZMQ) Unsubscribe(topic string, ch chan []string) error {
-	topics := []string{"hashblock", "hashtx", "rawblock", "rawtx"}
-
-	if !contains(topics, topic) {
-		return fmt.Errorf("topic must be %+v, received %q", topics, topic)
+	if !contains(zmq.topics, topic) {
+		return fmt.Errorf("topic must be %+v, received %q", zmq.topics, topic)
 	}
 
 	zmq.mu.Lock()
