@@ -92,7 +92,7 @@ func contains(s []string, e string) bool {
 
 // Subscribe comment
 func (zmq *ZMQ) Subscribe(topic string, ch chan []string) error {
-	topics := []string{"hashblock", "hashtx"}
+	topics := []string{"hashblock", "hashtx", "rawblock", "rawtx"}
 
 	if !contains(topics, topic) {
 		return fmt.Errorf("topic must be %+v, received %q", topics, topic)
@@ -115,7 +115,7 @@ func (zmq *ZMQ) Subscribe(topic string, ch chan []string) error {
 
 // Unsubscribe comment
 func (zmq *ZMQ) Unsubscribe(topic string, ch chan []string) error {
-	topics := []string{"hashblock", "hashtx"}
+	topics := []string{"hashblock", "hashtx", "rawblock", "rawtx"}
 
 	if !contains(topics, topic) {
 		return fmt.Errorf("topic must be %+v, received %q", topics, topic)
