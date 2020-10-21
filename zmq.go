@@ -47,13 +47,20 @@ func newZMQ(host string, port int, rawRequired bool) *ZMQ {
 	go func() {
 		for {
 			zmq.socket = zmq4.NewSub(context.Background(), zmq4.WithID(zmq4.SocketIdentity("sub")))
-			defer zmq.socket.Close()
+			defer func() {
+				if zmq.connected == true {
+					zmq.socket.Close()
+					zmq.connected = false
+				}
+			}()
 
 			if err := zmq.socket.Dial(zmq.address); err != nil {
 				zmq.mu.Lock()
 				zmq.err = err
 				zmq.mu.Unlock()
-				return
+				log.Printf("Attempting to re-establish ZMQ connection in 5 seconds...")
+				time.Sleep(10 * time.Second)
+				continue
 			}
 
 			if err := zmq.socket.SetOption(zmq4.OptionSubscribe, "hash"); err != nil {
@@ -93,11 +100,12 @@ func newZMQ(host string, port int, rawRequired bool) *ZMQ {
 					zmq.mu.RUnlock()
 				}
 			}
-
-			zmq.socket.Close()
-			zmq.connected = false
-			log.Printf("Attempting to re-establish ZMQ connection in 30 seconds...")
-			time.Sleep(30 * time.Second)
+			if zmq.connected == true {
+				zmq.socket.Close()
+				zmq.connected = false
+			}
+			log.Printf("Attempting to re-establish ZMQ connection in 10 seconds...")
+			time.Sleep(10 * time.Second)
 		}
 	}()
 
