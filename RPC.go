@@ -623,3 +623,29 @@ func (b *Bitcoind) SendToAddress(address string, amount float64) (string, error)
 
 	return txid, nil
 }
+
+// Generate for regtest
+func (b *Bitcoind) Generate(amount float64) ([]string, error) {
+	r, err := b.call("generate", []interface{}{amount})
+	if err != nil {
+		return nil, err
+	}
+
+	var hashes []string
+	json.Unmarshal(r.Result, &hashes)
+
+	return hashes, nil
+}
+
+// GenerateToAddress for regtest
+func (b *Bitcoind) GenerateToAddress(amount float64, address string) ([]string, error) {
+	r, err := b.call("generatetoaddress", []interface{}{amount, address})
+	if err != nil {
+		return nil, err
+	}
+
+	var hashes []string
+	json.Unmarshal(r.Result, &hashes)
+
+	return hashes, nil
+}
