@@ -36,7 +36,7 @@ func newZMQ(host string, port int, rawRequired bool) *ZMQ {
 	zmq := &ZMQ{
 		address:       fmt.Sprintf("tcp://%s:%d", host, port),
 		subscriptions: make(map[string][]chan []string),
-		topics:        []string{"hashblock", "hashtx"},
+		topics:        []string{"hashblock", "hashtx", "discardedfrommempool", "removedfrommempoolblock"},
 	}
 
 	if rawRequired {
