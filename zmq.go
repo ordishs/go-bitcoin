@@ -24,15 +24,20 @@ type ZMQ struct {
 
 // NewZMQ comment
 func NewZMQ(host string, port int) *ZMQ {
-	return newZMQ(host, port, false)
+	return newZMQ(host, port, false, "hash")
 }
 
 // NewZMQWithRaw creates a bitcoin ZMQ listener with raw enabled
 func NewZMQWithRaw(host string, port int) *ZMQ {
-	return newZMQ(host, port, true)
+	return newZMQ(host, port, true, "hash")
 }
 
-func newZMQ(host string, port int, rawRequired bool) *ZMQ {
+// NewZMQWithSubscribeOptionValue creates a bitcoin ZMQ listener with subscribe option value
+func NewZMQWithSubscribeOptionValue(host string, port int, optionValue string) *ZMQ {
+	return newZMQ(host, port, false, optionValue)
+}
+
+func newZMQ(host string, port int, rawRequired bool, optionValue string) *ZMQ {
 	zmq := &ZMQ{
 		address:       fmt.Sprintf("tcp://%s:%d", host, port),
 		subscriptions: make(map[string][]chan []string),
@@ -63,7 +68,7 @@ func newZMQ(host string, port int, rawRequired bool) *ZMQ {
 				continue
 			}
 
-			if err := zmq.socket.SetOption(zmq4.OptionSubscribe, "hash"); err != nil {
+			if err := zmq.socket.SetOption(zmq4.OptionSubscribe, optionValue); err != nil {
 				zmq.err = fmt.Errorf("%+v", err)
 				return
 			}
