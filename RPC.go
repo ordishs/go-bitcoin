@@ -270,7 +270,9 @@ func (b *Bitcoind) GetBestBlockHash() (hash string, err error) {
 	if err != nil {
 		return "", err
 	}
-	json.Unmarshal(r.Result, &hash)
+	if err := json.Unmarshal(r.Result, &hash); err != nil {
+		return "", err
+	}
 	return
 }
 
@@ -281,7 +283,11 @@ func (b *Bitcoind) GetBlockHash(blockHeight int) (blockHash string, err error) {
 	if err != nil {
 		return "", err
 	}
-	json.Unmarshal(r.Result, &blockHash)
+
+	if err := json.Unmarshal(r.Result, &blockHash); err != nil {
+		return "", err
+	}
+
 	return
 }
 
@@ -291,7 +297,11 @@ func (b *Bitcoind) SendRawTransaction(hex string) (txid string, err error) {
 	if err != nil {
 		return "", err
 	}
-	json.Unmarshal(r.Result, &txid)
+
+	if err := json.Unmarshal(r.Result, &txid); err != nil {
+		return "", err
+	}
+
 	return
 }
 
@@ -301,7 +311,11 @@ func (b *Bitcoind) SendRawTransactionWithoutFeeCheck(hex string) (txid string, e
 	if err != nil {
 		return "", err
 	}
-	json.Unmarshal(r.Result, &txid)
+
+	if err := json.Unmarshal(r.Result, &txid); err != nil {
+		return "", err
+	}
+
 	return
 }
 
@@ -514,7 +528,10 @@ func (b *Bitcoind) GetBlockTemplate(includeSegwit bool) (template *BlockTemplate
 		return nil, err
 	}
 
-	json.Unmarshal(r.Result, &template)
+	if err := json.Unmarshal(r.Result, &template); err != nil {
+		return nil, err
+	}
+
 	return
 }
 
@@ -525,7 +542,11 @@ func (b *Bitcoind) GetMiningCandidate() (template *MiningCandidate, err error) {
 	if err != nil {
 		return nil, err
 	}
-	json.Unmarshal(r.Result, &template)
+
+	if err := json.Unmarshal(r.Result, &template); err != nil {
+		return nil, err
+	}
+
 	return
 }
 

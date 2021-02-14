@@ -47,7 +47,12 @@ func (b *BitIndex) GetUtxos(addr string) (*UtxoResponse, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
+
 	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
 	bir := bitIndexResponseData{}
 	err = json.Unmarshal(body, &bir)
 	if err != nil {

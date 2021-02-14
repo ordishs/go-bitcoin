@@ -48,7 +48,7 @@ func newZMQ(host string, port int, rawRequired bool) *ZMQ {
 		for {
 			zmq.socket = zmq4.NewSub(context.Background(), zmq4.WithID(zmq4.SocketIdentity("sub")))
 			defer func() {
-				if zmq.connected == true {
+				if zmq.connected {
 					zmq.socket.Close()
 					zmq.connected = false
 				}
@@ -86,7 +86,7 @@ func newZMQ(host string, port int, rawRequired bool) *ZMQ {
 					log.Printf("ERROR from zmq.socket.Recv() - %v\n", err)
 					break
 				} else {
-					if zmq.connected == false {
+					if !zmq.connected {
 						zmq.connected = true
 						log.Printf("ZMQ: Subscription to %s established\n", zmq.address)
 					}
@@ -100,7 +100,7 @@ func newZMQ(host string, port int, rawRequired bool) *ZMQ {
 					zmq.mu.RUnlock()
 				}
 			}
-			if zmq.connected == true {
+			if zmq.connected {
 				zmq.socket.Close()
 				zmq.connected = false
 			}
