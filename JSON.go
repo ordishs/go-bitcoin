@@ -258,6 +258,8 @@ type Block struct {
 	VersionHex        string   `json:"versionHex"`
 	MerkleRoot        string   `json:"merkleroot"`
 	TxCount           uint64   `json:"txcount"`
+	NTx               uint64   `json:"nTx"`
+	NumTx             uint64   `json:"num_tx"`
 	Tx                []string `json:"tx"`
 	Time              uint64   `json:"time"`
 	MedianTime        uint64   `json:"mediantime"`
@@ -283,6 +285,8 @@ type Block2 struct {
 	VersionHex        string   `json:"versionHex"`
 	MerkleRoot        string   `json:"merkleroot"`
 	TxCount           uint64   `json:"txcount"`
+	NTx               uint64   `json:"nTx"`
+	NumTx             uint64   `json:"num_tx"`
 	Tx                []string `json:"tx"`
 	Time              uint32   `json:"time"`
 	MedianTime        uint32   `json:"mediantime"`
