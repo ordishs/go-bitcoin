@@ -86,19 +86,22 @@ func (c *rpcClient) doTimeoutRequest(timer *time.Timer, req *http.Request) (*htt
 }
 
 // call prepare & exec the request
-func (c *rpcClient) call(method string, params interface{}) (rr rpcResponse, err error) {
+func (c *rpcClient) call(method string, params interface{}) (rpcResponse, error) {
 	connectTimer := time.NewTimer(rpcClientTimeout * time.Second)
 	rpcR := rpcRequest{method, params, time.Now().UnixNano(), "1.0"}
 	payloadBuffer := &bytes.Buffer{}
 	jsonEncoder := json.NewEncoder(payloadBuffer)
-	err = jsonEncoder.Encode(rpcR)
+
+	err := jsonEncoder.Encode(rpcR)
 	if err != nil {
-		return
+		return rpcResponse{}, fmt.Errorf("failed to encode rpc request: %w", err)
 	}
+
 	req, err := http.NewRequest("POST", c.serverAddr, payloadBuffer)
 	if err != nil {
-		return
+		return rpcResponse{}, fmt.Errorf("failed to create new http request: %w", err)
 	}
+
 	req.Header.Add("Content-Type", "application/json;charset=utf-8")
 	req.Header.Add("Accept", "application/json")
 
@@ -109,18 +112,18 @@ func (c *rpcClient) call(method string, params interface{}) (rr rpcResponse, err
 
 	resp, err := c.doTimeoutRequest(connectTimer, req)
 	if err != nil {
-		return
+		return rpcResponse{}, fmt.Errorf("failed to do request: %w", err)
 	}
 	defer resp.Body.Close()
 
 	data, err := ioutil.ReadAll(resp.Body)
-	//fmt.Println(string(data))
 	if err != nil {
-		return
+		return rpcResponse{}, fmt.Errorf("failed to read response: %w", err)
 	}
-	if resp.StatusCode != 200 {
-		// err = errors.New("HTTP error: " + resp.Status)
 
+	var rr rpcResponse
+
+	if resp.StatusCode != 200 {
 		json.Unmarshal(data, &rr)
 		v, ok := rr.Err.(map[string]interface{})
 		if ok {
@@ -128,9 +131,14 @@ func (c *rpcClient) call(method string, params interface{}) (rr rpcResponse, err
 		} else {
 			err = errors.New("HTTP error: " + resp.Status)
 		}
-		return
+
+		return rr, fmt.Errorf("unexpected response code 200: %w", err)
 	}
 
 	err = json.Unmarshal(data, &rr)
-	return
+	if err != nil {
+		return rr, fmt.Errorf("failed to unmarshall response: %w", err)
+	}
+
+	return rr, nil
 }
