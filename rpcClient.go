@@ -102,6 +102,7 @@ func (c *rpcClient) call(method string, params interface{}) (rpcResponse, error)
 		return rpcResponse{}, fmt.Errorf("failed to create new http request: %w", err)
 	}
 
+	req.Close = true
 	req.Header.Add("Content-Type", "application/json;charset=utf-8")
 	req.Header.Add("Accept", "application/json")
 
