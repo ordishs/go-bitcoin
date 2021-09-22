@@ -47,7 +47,6 @@ func (b *Bitcoind) call(method string, params []interface{}) (rpcResponse, error
 
 	// Combine memoized function with a cache store
 	value, err, _ := b.group.Do(key, func() (interface{}, error) {
-		// fmt.Printf("EXECED: ")
 		data, innerErr := b.client.call(method, params)
 
 		if innerErr == nil {
@@ -621,7 +620,7 @@ func (b *Bitcoind) ListUnspent(addresses []string) (res []*UnspentTransaction, e
 		return
 	}
 
-	json.Unmarshal(r.Result, &res)
+	_ = json.Unmarshal(r.Result, &res)
 
 	for _, utxo := range res {
 		if utxo.Amount > 0 && utxo.Satoshis == 0 {
@@ -640,7 +639,7 @@ func (b *Bitcoind) SendToAddress(address string, amount float64) (string, error)
 	}
 
 	var txid string
-	json.Unmarshal(r.Result, &txid)
+	_ = json.Unmarshal(r.Result, &txid)
 
 	return txid, nil
 }
@@ -653,7 +652,7 @@ func (b *Bitcoind) Generate(amount float64) ([]string, error) {
 	}
 
 	var hashes []string
-	json.Unmarshal(r.Result, &hashes)
+	_ = json.Unmarshal(r.Result, &hashes)
 
 	return hashes, nil
 }
@@ -666,7 +665,7 @@ func (b *Bitcoind) GenerateToAddress(amount float64, address string) ([]string, 
 	}
 
 	var hashes []string
-	json.Unmarshal(r.Result, &hashes)
+	_ = json.Unmarshal(r.Result, &hashes)
 
 	return hashes, nil
 }

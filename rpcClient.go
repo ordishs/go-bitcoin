@@ -7,13 +7,19 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
+	"net/http/httputil"
+	"os"
 	"time"
 )
 
 const (
 	rpcClientTimeout = 120
 )
+
+var debugHttp = os.Getenv("debug_http")
+var debugHttpDumpBody = os.Getenv("debug_http_dump_body")
 
 // A rpcClient represents a JSON RPC client (over HTTP(s)).
 type rpcClient struct {
@@ -42,6 +48,14 @@ type rpcResponse struct {
 	ID     int64           `json:"id"`
 	Result json.RawMessage `json:"result"`
 	Err    interface{}     `json:"error"`
+}
+
+func debug(data []byte, err error) {
+	if err == nil {
+		log.Printf("%s\n\n", data)
+	} else {
+		log.Printf("ERROR: %s\n\n", err)
+	}
 }
 
 func newClient(host string, port int, user, passwd string, useSSL bool) (c *rpcClient, err error) {
@@ -73,12 +87,18 @@ func (c *rpcClient) doTimeoutRequest(timer *time.Timer, req *http.Request) (*htt
 	}
 	done := make(chan result, 1)
 	go func() {
+		if debugHttp == "true" {
+			debug(httputil.DumpRequestOut(req, debugHttpDumpBody == "true"))
+		}
 		resp, err := c.httpClient.Do(req)
 		done <- result{resp, err}
 	}()
 	// Wait for the read or the timeout
 	select {
 	case r := <-done:
+		if debugHttp == "true" {
+			debug(httputil.DumpResponse(r.resp, debugHttpDumpBody == "true"))
+		}
 		return r.resp, r.err
 	case <-timer.C:
 		return nil, errors.New("Timeout reading data from server")
@@ -102,7 +122,6 @@ func (c *rpcClient) call(method string, params interface{}) (rpcResponse, error)
 		return rpcResponse{}, fmt.Errorf("failed to create new http request: %w", err)
 	}
 
-	req.Close = true
 	req.Header.Add("Content-Type", "application/json;charset=utf-8")
 	req.Header.Add("Accept", "application/json")
 
