@@ -165,7 +165,7 @@ func (c *rpcClient) call(method string, params interface{}) (rpcResponse, error)
 }
 
 // call prepare & exec the request
-func (c *rpcClient) read(method string, params interface{}) (io.Reader, error) {
+func (c *rpcClient) read(method string, params interface{}) (io.ReadCloser, error) {
 	connectTimer := time.NewTimer(rpcClientTimeout * time.Second)
 	rpcR := rpcRequest{method, params, time.Now().UnixNano(), "1.0"}
 	payloadBuffer := &bytes.Buffer{}

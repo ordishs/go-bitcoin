@@ -3,7 +3,7 @@ module github.com/ordishs/go-bitcoin
 go 1.13
 
 require (
-	bitbucket.org/simon_ordish/cryptolib v1.0.44
+	bitbucket.org/simon_ordish/cryptolib v1.0.45
 	github.com/btcsuite/btcd v0.21.0-beta // indirect
 	github.com/go-zeromq/zmq4 v0.13.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible

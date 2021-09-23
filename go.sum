@@ -1,5 +1,5 @@
-bitbucket.org/simon_ordish/cryptolib v1.0.44 h1:1CtInJ3kOItIsWJ9K602c3QiN9q/Bqdd+KCgeVrqqbg=
-bitbucket.org/simon_ordish/cryptolib v1.0.44/go.mod h1:nANbyXzSE8t6y5j7bIwt4Ew06twmpOa6ACDjFsoautQ=
+bitbucket.org/simon_ordish/cryptolib v1.0.45 h1:N19jUjKRrMwmdQYT8ltIw+doIr0iVZCmupzPxHapELc=
+bitbucket.org/simon_ordish/cryptolib v1.0.45/go.mod h1:nANbyXzSE8t6y5j7bIwt4Ew06twmpOa6ACDjFsoautQ=
 github.com/aead/siphash v1.0.1/go.mod h1:Nywa3cDsYNNK3gaciGTWPwHt0wlpNV15vwmswBAUSII=
 github.com/btcsuite/btcd v0.20.1-beta/go.mod h1:wVuoA8VJLEcwgqHBwHmzLRazpKxTv13Px/pDuV7OomQ=
 github.com/btcsuite/btcd v0.21.0-beta h1:At9hIZdJW0s9E/fAz28nrz6AmcNlSVucCH796ZteX1M=

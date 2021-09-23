@@ -59,7 +59,7 @@ func (b *Bitcoind) call(method string, params []interface{}) (rpcResponse, error
 	return value.(rpcResponse), err
 }
 
-func (b *Bitcoind) read(method string, params []interface{}) (io.Reader, error) {
+func (b *Bitcoind) read(method string, params []interface{}) (io.ReadCloser, error) {
 	return b.client.read(method, params)
 }
 
@@ -380,7 +380,7 @@ func (b *Bitcoind) GetRawBlock(blockHash string) ([]byte, error) {
 }
 
 // GetRawBlockReader returns a reader of the block with the given hash.
-func (b *Bitcoind) GetRawBlockReader(blockHash string) (io.Reader, error) {
+func (b *Bitcoind) GetRawBlockReader(blockHash string) (io.ReadCloser, error) {
 	return b.read("getblock", []interface{}{blockHash, 0})
 }
 
