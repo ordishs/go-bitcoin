@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"strconv"
 	"time"
 
@@ -56,6 +57,10 @@ func (b *Bitcoind) call(method string, params []interface{}) (rpcResponse, error
 		return data, innerErr
 	})
 	return value.(rpcResponse), err
+}
+
+func (b *Bitcoind) read(method string, params []interface{}) (io.Reader, error) {
+	return b.client.read(method, params)
 }
 
 // GetConnectionCount returns the number of connections to other nodes.
@@ -372,6 +377,11 @@ func (b *Bitcoind) GetRawBlock(blockHash string) ([]byte, error) {
 	}
 
 	return res, nil
+}
+
+// GetRawBlockReader returns a reader of the block with the given hash.
+func (b *Bitcoind) GetRawBlockReader(blockHash string) (io.Reader, error) {
+	return b.read("getblock", []interface{}{blockHash, 0})
 }
 
 // GetBlockOverview returns basic information about the block with the given hash.

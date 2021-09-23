@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -144,7 +145,7 @@ func (c *rpcClient) call(method string, params interface{}) (rpcResponse, error)
 	var rr rpcResponse
 
 	if resp.StatusCode != 200 {
-		json.Unmarshal(data, &rr)
+		_ = json.Unmarshal(data, &rr)
 		v, ok := rr.Err.(map[string]interface{})
 		if ok {
 			err = errors.New(v["message"].(string))
@@ -157,8 +158,62 @@ func (c *rpcClient) call(method string, params interface{}) (rpcResponse, error)
 
 	err = json.Unmarshal(data, &rr)
 	if err != nil {
-		return rr, fmt.Errorf("failed to unmarshall response: %w", err)
+		return rr, fmt.Errorf("failed to unmarshal response: %w", err)
 	}
 
 	return rr, nil
+}
+
+// call prepare & exec the request
+func (c *rpcClient) read(method string, params interface{}) (io.Reader, error) {
+	connectTimer := time.NewTimer(rpcClientTimeout * time.Second)
+	rpcR := rpcRequest{method, params, time.Now().UnixNano(), "1.0"}
+	payloadBuffer := &bytes.Buffer{}
+	jsonEncoder := json.NewEncoder(payloadBuffer)
+
+	err := jsonEncoder.Encode(rpcR)
+	if err != nil {
+		return nil, fmt.Errorf("failed to encode rpc request: %w", err)
+	}
+
+	req, err := http.NewRequest("POST", c.serverAddr, payloadBuffer)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create new http request: %w", err)
+	}
+
+	req.Header.Add("Content-Type", "application/json;charset=utf-8")
+	req.Header.Add("Accept", "application/json")
+
+	// Auth ?
+	if len(c.user) > 0 || len(c.passwd) > 0 {
+		req.SetBasicAuth(c.user, c.passwd)
+	}
+
+	resp, err := c.doTimeoutRequest(connectTimer, req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to do request: %w", err)
+	}
+
+	if resp.StatusCode != 200 {
+		defer resp.Body.Close()
+
+		var rr rpcResponse
+		data, err := ioutil.ReadAll(resp.Body)
+
+		if err != nil {
+			return nil, fmt.Errorf("failed to read response: %w", err)
+		}
+
+		_ = json.Unmarshal(data, &rr)
+		v, ok := rr.Err.(map[string]interface{})
+		if ok {
+			err = errors.New(v["message"].(string))
+		} else {
+			err = errors.New("HTTP error: " + resp.Status)
+		}
+
+		return nil, fmt.Errorf("unexpected response code 200: %w", err)
+	}
+
+	return resp.Body, nil
 }
