@@ -6,6 +6,8 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
+	"net/http"
 	"strconv"
 	"time"
 
@@ -382,6 +384,27 @@ func (b *Bitcoind) GetRawBlock(blockHash string) ([]byte, error) {
 // GetRawBlockReader returns a reader of the block with the given hash.
 func (b *Bitcoind) GetRawBlockReader(blockHash string) (io.ReadCloser, error) {
 	return b.read("getblock", []interface{}{blockHash, 0})
+}
+
+func (b *Bitcoind) GetRawBlockRest(blockHash string) (io.ReadCloser, error) {
+	resp, err := http.Get(fmt.Sprintf("%s/rest/block/%s.bin", b.client.serverAddr, blockHash))
+	if err != nil {
+		return nil, fmt.Errorf("Could not GET block: %v", err)
+	}
+
+	if resp.StatusCode != 200 {
+		defer resp.Body.Close()
+
+		data, err := ioutil.ReadAll(resp.Body)
+
+		if err != nil {
+			return nil, fmt.Errorf("failed to read response body: %w", err)
+		}
+
+		return nil, fmt.Errorf("ERROR: code %d: %s", resp.StatusCode, data)
+	}
+
+	return resp.Body, nil
 }
 
 // GetBlockOverview returns basic information about the block with the given hash.
