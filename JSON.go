@@ -377,7 +377,7 @@ type BlockTxid struct {
 
 // RawTransaction comment
 type RawTransaction struct {
-	Hex           string `json:"hex"`
+	Hex           string `json:"hex,omitempty"`
 	TxID          string `json:"txid"`
 	Hash          string `json:"hash"`
 	Version       int32  `json:"version"`
