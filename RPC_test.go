@@ -541,3 +541,26 @@ func TestGetRawBlockRest(t *testing.T) {
 
 	t.Log(hex.EncodeToString(data))
 }
+
+func TestGetRawTransactionRest(t *testing.T) {
+	b, err := New("localhost", 18332, "bitcoin", "bitcoin", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	r, err := b.GetRawTransactionRest("2855e500a39c8b99329a42eae0829958e14eacaf17dab5f1a6aadd01fc9c9d18")
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+
+	defer r.Close()
+
+	data, err := io.ReadAll(r)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+
+	t.Log(hex.EncodeToString(data))
+}

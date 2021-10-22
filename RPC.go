@@ -544,6 +544,27 @@ func (b *Bitcoind) GetRawTransactionHex(txID string) (rawTx *string, err error) 
 	return
 }
 
+func (b *Bitcoind) GetRawTransactionRest(txid string) (io.ReadCloser, error) {
+	resp, err := http.Get(fmt.Sprintf("%s/rest/tx/%s.bin", b.client.serverAddr, txid))
+	if err != nil {
+		return nil, fmt.Errorf("Could not GET tx: %v", err)
+	}
+
+	if resp.StatusCode != 200 {
+		defer resp.Body.Close()
+
+		data, err := ioutil.ReadAll(resp.Body)
+
+		if err != nil {
+			return nil, fmt.Errorf("failed to read response body: %w", err)
+		}
+
+		return nil, fmt.Errorf("ERROR: code %d: %s", resp.StatusCode, data)
+	}
+
+	return resp.Body, nil
+}
+
 // GetBlockTemplate comment
 func (b *Bitcoind) GetBlockTemplate(includeSegwit bool) (template *BlockTemplate, err error) {
 	params := gbtParams{}
