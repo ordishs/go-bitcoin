@@ -4,8 +4,12 @@
     "Gefi",
     "getchaintxstats",
     "gettxout",
+    "hashtx",
+    "invalidtx",
     "patrickmn",
+    "rawtx",
     "Segwit",
-    "Sigs"
+    "Sigs",
+    "zeromq"
   ]
 }
