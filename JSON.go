@@ -448,6 +448,12 @@ type UnspentTransaction struct {
 	Confirmations uint32  `json:"confirmations"`
 }
 
+type TXOut struct {
+	BestBlock     string  `json:"bestblock`
+	Confirmations int     `json:"confirmations"`
+	Value         float64 `json:"value"`
+}
+
 // SignRawTransactionResponse struct
 type SignRawTransactionResponse struct {
 	Hex      string `json:"hex"`

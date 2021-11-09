@@ -655,13 +655,15 @@ func (b *Bitcoind) DecodeRawTransaction(txHex string) (string, error) {
 }
 
 // GetTxOut comment
-func (b *Bitcoind) GetTxOut(txHex string, vout int, includeMempool bool) (string, error) {
+func (b *Bitcoind) GetTxOut(txHex string, vout int, includeMempool bool) (res *TXOut, err error) {
 	r, err := b.call("gettxout", []interface{}{txHex, vout, includeMempool})
 	if err != nil {
-		return "", err
+		return
 	}
 
-	return string(r.Result), nil
+	_ = json.Unmarshal(r.Result, &res)
+
+	return
 }
 
 // ListUnspent comment
