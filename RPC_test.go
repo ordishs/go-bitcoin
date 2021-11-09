@@ -426,7 +426,7 @@ func TestGetTxOut(t *testing.T) {
 		t.FailNow()
 	}
 
-	t.Log(res.Value)
+	t.Logf("%#v", res)
 }
 
 func TestSubmitBlock(t *testing.T) {

@@ -449,9 +449,10 @@ type UnspentTransaction struct {
 }
 
 type TXOut struct {
-	BestBlock     string  `json:"bestblock`
-	Confirmations int     `json:"confirmations"`
-	Value         float64 `json:"value"`
+	BestBlock     string       `json:"bestblock`
+	Confirmations int          `json:"confirmations"`
+	Value         float64      `json:"value"`
+	ScriptPubKey  ScriptPubKey `json:"scriptPubKey"`
 }
 
 // SignRawTransactionResponse struct
