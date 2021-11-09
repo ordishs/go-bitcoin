@@ -62,22 +62,26 @@ type LocalAddress struct {
 
 // NetworkInfo comment
 type NetworkInfo struct {
-	Version           int            `json:"version"`
-	SubVersion        string         `json:"subversion"`
-	ProtocolVersion   int            `json:"protocolversion"`
-	LocalServices     string         `json:"localservices"`
-	LocalRelay        bool           `json:"localrelay"`
-	TimeOffset        int            `json:"timeoffset"`
-	TXPropagationFreq int            `json:"txnpropagationfreq"`
-	TXPropagationLen  int            `json:"txnpropagationqlen"`
-	NetworkActive     bool           `json:"networkactive"`
-	Connections       int            `json:"connections"`
-	AddressCount      int            `json:"addresscount"`
-	Networks          []Network      `json:"networks"`
-	RelayFee          float64        `json:"relayfee"`
-	ExcessUTXOCharge  float64        `json:"excessutxocharge"`
-	LocalAddresses    []LocalAddress `json:"localaddresses"`
-	Warnings          string         `json:"warnings"`
+	Version                         int            `json:"version"`
+	SubVersion                      string         `json:"subversion"`
+	ProtocolVersion                 int            `json:"protocolversion"`
+	LocalServices                   string         `json:"localservices"`
+	LocalRelay                      bool           `json:"localrelay"`
+	TimeOffset                      int            `json:"timeoffset"`
+	TXPropagationFreq               int            `json:"txnpropagationfreq"`
+	TXPropagationLen                int            `json:"txnpropagationqlen"`
+	NetworkActive                   bool           `json:"networkactive"`
+	Connections                     int            `json:"connections"`
+	AddressCount                    int            `json:"addresscount"`
+	Networks                        []Network      `json:"networks"`
+	RelayFee                        float64        `json:"relayfee"`
+	MinConsolidationFactor          int            `json:"minconsolidationfactor"`
+	MinConsolidationInputMaturity   int            `json:"minconsolidationinputmaturity"`
+	MaxConsolidationInputScriptSize int            `json:"maxconsolidationinputscriptsize"`
+	AcceptNonStdConsolidationInput  bool           `json:"acceptnonstdconsolidationinput"`
+	ExcessUTXOCharge                float64        `json:"excessutxocharge"`
+	LocalAddresses                  []LocalAddress `json:"localaddresses"`
+	Warnings                        string         `json:"warnings"`
 }
 
 // NetTotals comment
