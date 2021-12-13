@@ -153,7 +153,7 @@ func (c *rpcClient) call(method string, params interface{}) (rpcResponse, error)
 			err = errors.New("HTTP error: " + resp.Status)
 		}
 
-		return rr, fmt.Errorf("unexpected response code 200: %w", err)
+		return rr, fmt.Errorf("unexpected response code %d: %w", resp.StatusCode, err)
 	}
 
 	err = json.Unmarshal(data, &rr)
@@ -212,7 +212,7 @@ func (c *rpcClient) read(method string, params interface{}) (io.ReadCloser, erro
 			err = errors.New("HTTP error: " + resp.Status)
 		}
 
-		return nil, fmt.Errorf("unexpected response code 200: %w", err)
+		return nil, fmt.Errorf("unexpected response code %d: %w", resp.StatusCode, err)
 	}
 
 	return resp.Body, nil
