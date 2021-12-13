@@ -187,6 +187,29 @@ func (b *Bitcoind) GetPeerInfo() (info PeerInfo, err error) {
 	return
 }
 
+// GetChainTips return information about all known tips in the block tree, including the main chain as well as orphaned branches.
+// Possible values for status:
+// 1.  "invalid"               This branch contains at least one invalid block
+// 2.  "headers-only"          Not all blocks for this branch are available, but the headers are valid
+// 3.  "valid-headers"         All blocks are available for this branch, but they were never fully validated
+// 4.  "valid-fork"            This branch is not part of the active chain, but is fully validated
+// 5.  "active"                This is the tip of the active main chain, which is certainly valid
+func (b *Bitcoind) GetChainTips() (tips ChainTips, err error) {
+	r, err := b.call("getchaintips", nil)
+	if err != nil {
+		return
+	}
+
+	if r.Err != nil {
+		rr := r.Err.(map[string]interface{})
+		err = fmt.Errorf("ERROR %s: %s", rr["code"], rr["message"])
+		return
+	}
+
+	err = json.Unmarshal(r.Result, &tips)
+	return
+}
+
 // GetMempoolInfo comment
 func (b *Bitcoind) GetMempoolInfo() (info MempoolInfo, err error) {
 	r, err := b.call("getmempoolinfo", nil)
@@ -219,6 +242,55 @@ func (b *Bitcoind) GetRawMempool(details bool) (raw []byte, err error) {
 	}
 
 	//err = json.Unmarshal(r.Result, &raw)
+	raw, err = json.Marshal(r.Result)
+	return
+}
+
+// GetRawNonFinalMempool returns all transaction ids in the non-final memory pool as a json array of string transaction ids.
+func (b *Bitcoind) GetRawNonFinalMempool() ([]string, error) {
+	r, err := b.call("getrawmempool", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var ids []string
+	_ = json.Unmarshal(r.Result, &ids)
+
+	return ids, nil
+}
+
+// GetMempoolAncestors if txid is in the mempool, returns all in-mempool ancestors..
+func (b *Bitcoind) GetMempoolAncestors(txid string, details bool) (raw []byte, err error) {
+	p := []interface{}{txid}
+	r, err := b.call("getmempoolancestors", p)
+	if err != nil {
+		return
+	}
+
+	if r.Err != nil {
+		rr := r.Err.(map[string]interface{})
+		err = fmt.Errorf("ERROR %s: %s", rr["code"], rr["message"])
+		return
+	}
+
+	raw, err = json.Marshal(r.Result)
+	return
+}
+
+// GetMempoolDescendants if txid is in the mempool, returns all in-mempool descendants..
+func (b *Bitcoind) GetMempoolDescendants(txid string, details bool) (raw []byte, err error) {
+	p := []interface{}{txid}
+	r, err := b.call("getmempooldescendants", p)
+	if err != nil {
+		return
+	}
+
+	if r.Err != nil {
+		rr := r.Err.(map[string]interface{})
+		err = fmt.Errorf("ERROR %s: %s", rr["code"], rr["message"])
+		return
+	}
+
 	raw, err = json.Marshal(r.Result)
 	return
 }
