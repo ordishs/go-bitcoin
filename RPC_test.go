@@ -4,8 +4,11 @@ package bitcoin
 
 import (
 	"encoding/hex"
+	"fmt"
 	"io"
+	"strings"
 	"testing"
+	"time"
 )
 
 func TestGetBlockChainInfo(t *testing.T) {
@@ -578,4 +581,83 @@ func TestGetRawTransactionRest(t *testing.T) {
 	}
 
 	t.Log(hex.EncodeToString(data))
+}
+
+func TestTime(t *testing.T) {
+	keyfunc1 := func(method string, params []interface{}) string {
+		var s strings.Builder
+
+		s.WriteString(method)
+		s.WriteRune('-')
+
+		s.WriteString(params[0].(string))
+		s.WriteRune('|')
+
+		if params[1].(bool) {
+			s.WriteRune('T')
+		} else {
+			s.WriteRune('F')
+		}
+
+		if params[2].(bool) {
+			s.WriteRune('T')
+		} else {
+			s.WriteRune('F')
+		}
+
+		return s.String()
+	}
+
+	keyfunc2 := func(method string, params []interface{}) string {
+		return fmt.Sprintf("%s-%v", method, params)
+	}
+
+	keyfunc3 := func(method string, params []interface{}) string {
+		var s strings.Builder
+
+		fmt.Fprintf(&s, "%s-%s|", method, params[0].(string))
+
+		if params[1].(bool) {
+			s.WriteRune('T')
+		} else {
+			s.WriteRune('F')
+		}
+
+		if params[2].(bool) {
+			s.WriteRune('T')
+		} else {
+			s.WriteRune('F')
+		}
+
+		return s.String()
+	}
+
+	method := "sendrawtransaction"
+	hex := "12345677"
+	params := []interface{}{hex, false, true}
+	times := 1_000_000
+
+	start := time.Now()
+
+	for i := 0; i < times; i++ {
+		_ = keyfunc1(method, params)
+	}
+
+	t.Logf("1. %s - Took %s\n", keyfunc1(method, params), time.Since(start))
+
+	start = time.Now()
+
+	for i := 0; i < times; i++ {
+		_ = keyfunc2(method, params)
+	}
+
+	t.Logf("2. %s - Took %s\n", keyfunc2(method, params), time.Since(start))
+
+	start = time.Now()
+
+	for i := 0; i < times; i++ {
+		_ = keyfunc3(method, params)
+	}
+
+	t.Logf("2. %s - Took %s\n", keyfunc3(method, params), time.Since(start))
 }

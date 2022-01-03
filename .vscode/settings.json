@@ -1,15 +1,25 @@
 {
   "cSpell.words": [
+    "currentblocktx",
     "Divf",
+    "excessutxocharge",
     "Gefi",
     "getchaintxstats",
     "gettxout",
     "hashtx",
     "invalidtx",
+    "Merkle",
+    "merkleroot",
+    "networkhashps",
     "patrickmn",
+    "paytxfee",
     "rawtx",
     "Segwit",
     "Sigs",
+    "totalbytesrecv",
+    "txcount",
+    "txnpropagationfreq",
+    "txnpropagationqlen",
     "zeromq"
   ]
 }
