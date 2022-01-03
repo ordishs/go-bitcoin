@@ -583,7 +583,7 @@ func TestGetRawTransactionRest(t *testing.T) {
 	t.Log(hex.EncodeToString(data))
 }
 
-func TestTime(t *testing.T) {
+func TestSendTime(t *testing.T) {
 	keyfunc1 := func(method string, params []interface{}) string {
 		var s strings.Builder
 
@@ -660,4 +660,56 @@ func TestTime(t *testing.T) {
 	}
 
 	t.Logf("2. %s - Took %s\n", keyfunc3(method, params), time.Since(start))
+}
+
+func TestGetTime(t *testing.T) {
+	keyfunc1 := func(method string, params []interface{}) string {
+		var b strings.Builder
+
+		b.WriteString(method)
+		b.WriteRune('-')
+		b.WriteString(params[0].(string))
+		b.WriteRune('|')
+		b.WriteByte(byte(params[1].(int)))
+
+		return b.String()
+	}
+
+	keyfunc2 := func(method string, params []interface{}) string {
+		var b strings.Builder
+
+		b.WriteString(method)
+		b.WriteRune('-')
+		b.WriteString(params[0].(string))
+		b.WriteRune('|')
+		if params[1].(int) == 0 {
+			b.WriteRune('0')
+		} else {
+			b.WriteRune('1')
+		}
+
+		return b.String()
+	}
+
+	method := "getrawtransaction"
+	hex := "12345677"
+	params := []interface{}{hex, 1}
+	times := 1_000_000
+
+	start := time.Now()
+
+	for i := 0; i < times; i++ {
+		_ = keyfunc1(method, params)
+	}
+
+	t.Logf("1. %s - Took %s\n", keyfunc1(method, params), time.Since(start))
+
+	start = time.Now()
+
+	for i := 0; i < times; i++ {
+		_ = keyfunc2(method, params)
+	}
+
+	t.Logf("2. %s - Took %s\n", keyfunc2(method, params), time.Since(start))
+
 }

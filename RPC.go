@@ -406,7 +406,7 @@ func (b *Bitcoind) SendRawTransactionWithoutFeeCheck(hex string) (txid string, e
 
 	// Doing this function is 4 times faster than the normal fmt.Sprintf("%s|%v", method, params).  As we know that
 	// we will always pass (string, bool, bool) as the params, we can avoid the cost of reflection.
-	keyfunc := func(method string, params []interface{}) string {
+	keyFunc := func(method string, params []interface{}) string {
 		var s strings.Builder
 
 		s.WriteString(method)
@@ -427,7 +427,7 @@ func (b *Bitcoind) SendRawTransactionWithoutFeeCheck(hex string) (txid string, e
 		return s.String()
 	}
 
-	r, err := b.callWithKeyFunc("sendrawtransaction", []interface{}{hex, false, true}, keyfunc)
+	r, err := b.callWithKeyFunc("sendrawtransaction", []interface{}{hex, false, true}, keyFunc)
 	if err != nil {
 		return "", err
 	}
@@ -603,7 +603,11 @@ func keyFuncForGetRawTransaction(method string, params []interface{}) string {
 	b.WriteRune('-')
 	b.WriteString(params[0].(string))
 	b.WriteRune('|')
-	b.WriteByte(byte(params[1].(int)))
+	if params[1].(int) == 0 {
+		b.WriteRune('0')
+	} else {
+		b.WriteRune('1')
+	}
 
 	return b.String()
 }
@@ -779,7 +783,7 @@ func (b *Bitcoind) DecodeRawTransaction(txHex string) (string, error) {
 	return string(r.Result), nil
 }
 
-func keyfuncForGetTxOut(method string, params []interface{}) string {
+func keyFuncForGetTxOut(method string, params []interface{}) string {
 	var b strings.Builder
 	b.Grow(85) // "gettxout" = 9, "-" = 1, {txid} = 64, "|" = 1, int = 8 bytes "|" = 1, "T" = 1
 
@@ -793,7 +797,7 @@ func keyfuncForGetTxOut(method string, params []interface{}) string {
 }
 
 func (b *Bitcoind) GetTxOut(txHex string, vout int, includeMempool bool) (res *TXOut, err error) {
-	r, err := b.callWithKeyFunc("gettxout", []interface{}{txHex, vout, includeMempool}, keyfuncForGetTxOut)
+	r, err := b.callWithKeyFunc("gettxout", []interface{}{txHex, vout, includeMempool}, keyFuncForGetTxOut)
 	if err != nil {
 		return
 	}
