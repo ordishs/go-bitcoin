@@ -44,6 +44,16 @@ type GetInfo struct {
 	MaxStackMemoryUsageConsensus uint64  `json:"maxstackmemoryusageconsensus"`
 }
 
+type Tip struct {
+	Height    uint64 `json:"height"`
+	Hash      string `json:"hash"`
+	BranchLen uint32 `json:"branchlen"`
+	Status    string `json:"status"`
+}
+
+// ChainTips comment
+type ChainTips []Tip
+
 // Network comment
 type Network struct {
 	Name                       string `json:"name"`
@@ -453,6 +463,7 @@ type TXOut struct {
 	Confirmations int          `json:"confirmations"`
 	Value         float64      `json:"value"`
 	ScriptPubKey  ScriptPubKey `json:"scriptPubKey"`
+	Coinbase      bool         `json:"coinbase"`
 }
 
 // SignRawTransactionResponse struct
