@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	"bitbucket.org/simon_ordish/cryptolib"
 	cache "github.com/patrickmn/go-cache"
 	"golang.org/x/sync/singleflight"
 )
@@ -437,6 +438,65 @@ func (b *Bitcoind) SendRawTransactionWithoutFeeCheck(hex string) (txid string, e
 	}
 
 	return
+}
+
+func (b *Bitcoind) SendRawTransactionWithoutFeeCheckOrScriptCheck(raw string) (string, error) {
+
+	type transaction struct {
+		Hex                      string                 `json:"hex"`
+		AllowHighFees            bool                   `json:"allowhighfees"`
+		DontCheckFee             bool                   `json:"dontcheckfee"`
+		ListUnconfirmedAncestors bool                   `json:"listunconfirmedancestors"`
+		Config                   map[string]interface{} `json:"config,omitempty"`
+	}
+
+	transactions := []*transaction{{
+		Hex:                      raw,
+		AllowHighFees:            false,
+		DontCheckFee:             true,
+		ListUnconfirmedAncestors: false,
+		Config:                   map[string]interface{}{"maxscriptsizepolicy": 50000000},
+	}}
+
+	r, err := b.call("sendrawtransactions", []interface{}{transactions})
+	if err != nil {
+		return "", err
+	}
+
+	type txResponse struct {
+		TxID         string `json:"txid"`
+		RejectReason string `json:"reject_reason"`
+	}
+
+	type result struct {
+		Known       []*txResponse `json:"known"`
+		Evicted     []*txResponse `json:"evicted"`
+		Invalid     []*txResponse `json:"invalid"`
+		Unconfirmed []*txResponse `json:"unconfirmed"`
+	}
+
+	var res result
+
+	if err := json.Unmarshal(r.Result, &res); err != nil {
+		return "", err
+	}
+
+	if len(res.Known) > 0 {
+		return res.Known[0].TxID, nil
+	} else if len(res.Unconfirmed) > 0 {
+		return res.Unconfirmed[0].TxID, nil
+	} else if len(res.Evicted) > 0 {
+		return "", errors.New("Transaction evicted due to insufficient fees")
+	} else if len(res.Invalid) > 0 {
+		return "", fmt.Errorf("Transaction invalid: %s", res.Invalid[0].RejectReason)
+	} else {
+		// It seems that if the transaction is not listed in any of the above arrays, it is successful.  Compute the txid
+
+		b, _ := hex.DecodeString(raw)
+		hash := cryptolib.ReverseBytes(cryptolib.Sha256d(b))
+		return hex.EncodeToString(hash), nil
+	}
+
 }
 
 // SignRawTransaction comment

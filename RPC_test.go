@@ -248,6 +248,20 @@ func TestSendRawTransaction(t *testing.T) {
 	t.Logf("%s", res)
 }
 
+func TestSendRawTransactionWithoutFeeCheckOrScriptCheck(t *testing.T) {
+	b, err := New("localhost", 18332, "bitcoin", "bitcoin", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	res, err := b.SendRawTransactionWithoutFeeCheckOrScriptCheck("02000000012cf2bccc35c87b1f6ba2de5e7d175bc0be054230b557efc12636cc092faca6760000000049483045022100f323d358de7e06a43bf1cb272072c283593eaccb90455a6dd5947ae50a0b157b0220212d2208f211ba4be88141cc8c73cf6f9f4116c78e1bb8ffe2d27cb4326ba06f41ffffffff01f0ca052a010000001976a9142a5acfb9a647a03a758afaa5c359284d4b95c0be88ac00000000")
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("%s", res)
+}
+
 func TestGetBlockOverview(t *testing.T) {
 	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
 	if err != nil {
