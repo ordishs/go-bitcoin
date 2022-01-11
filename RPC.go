@@ -259,7 +259,7 @@ func (b *Bitcoind) GetRawMempool(details bool) (raw []byte, err error) {
 
 // GetRawNonFinalMempool returns all transaction ids in the non-final memory pool as a json array of string transaction ids.
 func (b *Bitcoind) GetRawNonFinalMempool() ([]string, error) {
-	r, err := b.call("getrawmempool", nil)
+	r, err := b.call("getrawnonfinalmempool", nil)
 	if err != nil {
 		return nil, err
 	}
