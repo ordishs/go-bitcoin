@@ -430,7 +430,7 @@ type OpReturn struct {
 	Parts  []string `json:"parts"`
 }
 
-// OpReturn comment
+// Tag
 type Tag struct {
 	Type   string `json:"type"`
 	Action string `json:"action"`
