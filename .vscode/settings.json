@@ -2,6 +2,8 @@
   "cSpell.words": [
     "currentblocktx",
     "Divf",
+    "Dont",
+    "dontcheckfee",
     "excessutxocharge",
     "Gefi",
     "getchaintxstats",
@@ -11,6 +13,7 @@
     "Merkle",
     "merkleroot",
     "networkhashps",
+    "ordish",
     "patrickmn",
     "paytxfee",
     "rawtx",

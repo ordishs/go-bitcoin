@@ -455,7 +455,7 @@ func (b *Bitcoind) SendRawTransactionWithoutFeeCheckOrScriptCheck(raw string) (s
 		AllowHighFees:            false,
 		DontCheckFee:             true,
 		ListUnconfirmedAncestors: false,
-		Config:                   map[string]interface{}{"maxscriptsizepolicy": 50000000},
+		Config:                   map[string]interface{}{"maxscriptsizepolicy": 50_000_000},
 	}}
 
 	r, err := b.call("sendrawtransactions", []interface{}{transactions})

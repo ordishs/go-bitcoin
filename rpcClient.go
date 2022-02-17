@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/http/httptrace"
 	"net/http/httputil"
 	"os"
 	"time"
@@ -121,6 +122,19 @@ func (c *rpcClient) call(method string, params interface{}) (rpcResponse, error)
 	req, err := http.NewRequest("POST", c.serverAddr, payloadBuffer)
 	if err != nil {
 		return rpcResponse{}, fmt.Errorf("failed to create new http request: %w", err)
+	}
+
+	if os.Getenv("HTTP_TRACE") == "TRUE" {
+		trace := &httptrace.ClientTrace{
+			DNSDone: func(dnsInfo httptrace.DNSDoneInfo) {
+				log.Printf("HTTP_TRACE - DNS: %+v\n", dnsInfo)
+			},
+			GotConn: func(connInfo httptrace.GotConnInfo) {
+				log.Printf("HTTP_TRACE - Conn: %+v\n", connInfo)
+			}}
+		ctxTrace := httptrace.WithClientTrace(req.Context(), trace)
+
+		req = req.WithContext(ctxTrace)
 	}
 
 	req.Header.Add("Content-Type", "application/json;charset=utf-8")
