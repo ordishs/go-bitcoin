@@ -430,6 +430,12 @@ type OpReturn struct {
 	Parts  []string `json:"parts"`
 }
 
+// Tag
+type Tag struct {
+	Type   string `json:"type"`
+	Action string `json:"action"`
+}
+
 // ScriptPubKey Comment
 type ScriptPubKey struct {
 	ASM         string    `json:"asm"`
@@ -437,7 +443,8 @@ type ScriptPubKey struct {
 	ReqSigs     int64     `json:"reqSigs,omitempty"`
 	Type        string    `json:"type"`
 	Addresses   []string  `json:"addresses,omitempty"`
-	OpReturn    *OpReturn `json:"opReturn"`
+	OpReturn    *OpReturn `json:"opReturn,omitempty"`
+	Tag         *Tag      `json:"tag,omitempty"`
 	IsTruncated bool      `json:"isTruncated"`
 }
 
