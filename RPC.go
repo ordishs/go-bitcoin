@@ -534,6 +534,22 @@ func (b *Bitcoind) GetBlock(blockHash string) (block *Block, err error) {
 	return
 }
 
+func (b *Bitcoind) GetBlockByHeight(blockHeight int) (block *Block, err error) {
+	r, err := b.call("getblockbyheight", []interface{}{blockHeight})
+	if err != nil {
+		return
+	}
+
+	if r.Err != nil {
+		rr := r.Err.(map[string]interface{})
+		err = fmt.Errorf("ERROR %s: %s", rr["code"], rr["message"])
+		return
+	}
+
+	err = json.Unmarshal(r.Result, &block)
+	return
+}
+
 // GetRawBlock returns the raw bytes of the block with the given hash.
 func (b *Bitcoind) GetRawBlock(blockHash string) ([]byte, error) {
 	r, err := b.call("getblock", []interface{}{blockHash, 0})
