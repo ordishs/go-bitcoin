@@ -352,7 +352,8 @@ type BlockHeader struct {
 	Chainwork         string  `json:"chainwork"`
 	PreviousBlockHash string  `json:"previousblockhash"`
 	NextBlockHash     string  `json:"nextblockhash"`
-	TXCount           uint32  `json:"num_tx"`
+	NTx               uint64  `json:"nTx"`
+	TxCount           uint64  `json:"num_tx"`
 }
 
 // BlockHeaderAndCoinbase comment
