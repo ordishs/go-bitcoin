@@ -440,7 +440,7 @@ func (b *Bitcoind) SendRawTransactionWithoutFeeCheck(hex string) (txid string, e
 	return
 }
 
-type TransactionBatch struct {
+type BatchedTransaction struct {
 	Hex                      string                 `json:"hex"`
 	AllowHighFees            bool                   `json:"allowhighfees"`
 	DontCheckFee             bool                   `json:"dontcheckfee"`
@@ -460,8 +460,8 @@ type BatchResults struct {
 	Unconfirmed []*TxResponse `json:"unconfirmed"`
 }
 
-func (b *Bitcoind) SendRawTransactions(batch []*Transaction) (*BatchResults, error) {
-	r, err := b.call("sendrawtransactions", []interface{}{batch})
+func (b *Bitcoind) SendRawTransactions(batchedTransactions []*BatchedTransaction) (*BatchResults, error) {
+	r, err := b.call("sendrawtransactions", []interface{}{batchedTransactions})
 	if err != nil {
 		return nil, err
 	}
@@ -477,7 +477,7 @@ func (b *Bitcoind) SendRawTransactions(batch []*Transaction) (*BatchResults, err
 
 func (b *Bitcoind) SendRawTransactionWithoutFeeCheckOrScriptCheck(raw string) (string, error) {
 
-	transactions := []*TransactionBatch{{
+	transactions := []*BatchedTransaction{{
 		Hex:                      raw,
 		AllowHighFees:            false,
 		DontCheckFee:             true,
