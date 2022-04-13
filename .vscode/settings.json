@@ -6,6 +6,7 @@
     "dontcheckfee",
     "excessutxocharge",
     "Gefi",
+    "getblockbyheight",
     "getchaintxstats",
     "gettxout",
     "hashtx",

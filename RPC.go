@@ -440,17 +440,44 @@ func (b *Bitcoind) SendRawTransactionWithoutFeeCheck(hex string) (txid string, e
 	return
 }
 
-func (b *Bitcoind) SendRawTransactionWithoutFeeCheckOrScriptCheck(raw string) (string, error) {
+type TransactionBatch struct {
+	Hex                      string                 `json:"hex"`
+	AllowHighFees            bool                   `json:"allowhighfees"`
+	DontCheckFee             bool                   `json:"dontcheckfee"`
+	ListUnconfirmedAncestors bool                   `json:"listunconfirmedancestors"`
+	Config                   map[string]interface{} `json:"config,omitempty"`
+}
 
-	type transaction struct {
-		Hex                      string                 `json:"hex"`
-		AllowHighFees            bool                   `json:"allowhighfees"`
-		DontCheckFee             bool                   `json:"dontcheckfee"`
-		ListUnconfirmedAncestors bool                   `json:"listunconfirmedancestors"`
-		Config                   map[string]interface{} `json:"config,omitempty"`
+type TxResponse struct {
+	TxID         string `json:"txid"`
+	RejectReason string `json:"reject_reason"`
+}
+
+type BatchResults struct {
+	Known       []*TxResponse `json:"known"`
+	Evicted     []*TxResponse `json:"evicted"`
+	Invalid     []*TxResponse `json:"invalid"`
+	Unconfirmed []*TxResponse `json:"unconfirmed"`
+}
+
+func (b *Bitcoind) SendRawTransactions(batch []*Transaction) (*BatchResults, error) {
+	r, err := b.call("sendrawtransactions", []interface{}{batch})
+	if err != nil {
+		return nil, err
 	}
 
-	transactions := []*transaction{{
+	var res BatchResults
+
+	if err := json.Unmarshal(r.Result, &res); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+func (b *Bitcoind) SendRawTransactionWithoutFeeCheckOrScriptCheck(raw string) (string, error) {
+
+	transactions := []*TransactionBatch{{
 		Hex:                      raw,
 		AllowHighFees:            false,
 		DontCheckFee:             true,
@@ -463,19 +490,7 @@ func (b *Bitcoind) SendRawTransactionWithoutFeeCheckOrScriptCheck(raw string) (s
 		return "", err
 	}
 
-	type txResponse struct {
-		TxID         string `json:"txid"`
-		RejectReason string `json:"reject_reason"`
-	}
-
-	type result struct {
-		Known       []*txResponse `json:"known"`
-		Evicted     []*txResponse `json:"evicted"`
-		Invalid     []*txResponse `json:"invalid"`
-		Unconfirmed []*txResponse `json:"unconfirmed"`
-	}
-
-	var res result
+	var res BatchResults
 
 	if err := json.Unmarshal(r.Result, &res); err != nil {
 		return "", err
@@ -496,7 +511,6 @@ func (b *Bitcoind) SendRawTransactionWithoutFeeCheckOrScriptCheck(raw string) (s
 		hash := cryptolib.ReverseBytes(cryptolib.Sha256d(b))
 		return hex.EncodeToString(hash), nil
 	}
-
 }
 
 // SignRawTransaction comment
