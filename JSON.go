@@ -375,6 +375,34 @@ type BlockHeaderAndCoinbase struct {
 	Tx                []RawTransaction `json:"tx"`
 }
 
+type BlockStats struct {
+	AvgFee        float64 `json:"avgfee"`
+	AvgFeeRate    float64 `json:"avgfeerate"`
+	AvgTxSize     int     `json:"avgtxsize"`
+	BlockHash     string  `json:"blockhash"`
+	Height        int     `json:"height"`
+	Ins           int     `json:"ins"`
+	MaxFee        float64 `json:"maxfee"`
+	MaxFeeRate    float64 `json:"maxfeerate"`
+	MaxTxSize     int     `json:"maxtxsize"`
+	MedianFee     float64 `json:"medianfee"`
+	MedianFeeRate float64 `json:"medianfeerate"`
+	MedianTime    int     `json:"mediantime"`
+	MedianTxSize  int     `json:"mediantxsize"`
+	MinFee        float64 `json:"minfee"`
+	MinFeeRate    float64 `json:"minfeerate"`
+	MinTxSize     int     `json:"mintxsize"`
+	Outs          int     `json:"outs"`
+	Subsidy       float64 `json:"subsidy"`
+	Time          int     `json:"time"`
+	TotalOut      float64 `json:"total_out"`
+	TotalSize     int     `json:"total_size"`
+	TotalFee      float64 `json:"totalfee"`
+	Txs           int     `json:"txs"`
+	UtxoIncrease  int     `json:"utxo_increase"`
+	UtxoSizeInc   int     `json:"utxo_size_inc"`
+}
+
 // BlockPage to store links
 type BlockPage struct {
 	URI  []string `json:"uri"`

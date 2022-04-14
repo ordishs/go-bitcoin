@@ -548,6 +548,40 @@ func (b *Bitcoind) GetBlock(blockHash string) (block *Block, err error) {
 	return
 }
 
+// GetBlockStatsByHeight returns block stats from the given block height.
+func (b *Bitcoind) GetBlockStatsByHeight(blockHeight int) (block *BlockStats, err error) {
+	r, err := b.call("getblockstatsbyheight", []interface{}{blockHeight})
+	if err != nil {
+		return
+	}
+
+	if r.Err != nil {
+		rr := r.Err.(map[string]interface{})
+		err = fmt.Errorf("ERROR %s: %s", rr["code"], rr["message"])
+		return
+	}
+
+	err = json.Unmarshal(r.Result, &block)
+	return
+}
+
+// GetBlockStats returns block stats from the given block hash.
+func (b *Bitcoind) GetBlockStats(blockHash string) (block *BlockStats, err error) {
+	r, err := b.call("getblockstats", []interface{}{blockHash})
+	if err != nil {
+		return
+	}
+
+	if r.Err != nil {
+		rr := r.Err.(map[string]interface{})
+		err = fmt.Errorf("ERROR %s: %s", rr["code"], rr["message"])
+		return
+	}
+
+	err = json.Unmarshal(r.Result, &block)
+	return
+}
+
 func (b *Bitcoind) GetBlockByHeight(blockHeight int) (block *Block, err error) {
 	r, err := b.call("getblockbyheight", []interface{}{blockHeight})
 	if err != nil {
