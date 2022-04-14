@@ -304,6 +304,34 @@ func TestGetBlockByHeight(t *testing.T) {
 	t.Logf("%#v", res)
 }
 
+func TestGetBlockStatsByHeight(t *testing.T) {
+	b, err := New("localhost", 18332, "bitcoin", "bitcoin", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	res, err := b.GetBlockStatsByHeight(102)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("%#v", res)
+}
+
+func TestGetBlockStats(t *testing.T) {
+	b, err := New("localhost", 18332, "bitcoin", "bitcoin", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	res, err := b.GetBlockStats("000000000000000005e827eecfc1b8cbb990f4ae458e748480d10b80458faf25")
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("%#v", res)
+}
+
 func TestGetGenesisBlock(t *testing.T) {
 	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
 	if err != nil {
