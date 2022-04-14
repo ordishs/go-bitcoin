@@ -460,8 +460,8 @@ type BatchResults struct {
 	Unconfirmed []*TxResponse `json:"unconfirmed"`
 }
 
-func (b *Bitcoind) SendRawTransactions(batchedTransactions []*BatchedTransaction) (*BatchResults, error) {
-	r, err := b.call("sendrawtransactions", []interface{}{batchedTransactions})
+func (b *Bitcoind) SendRawTransactions(batchedTransactions []*BatchedTransaction, config map[string]interface{}) (*BatchResults, error) {
+	r, err := b.call("sendrawtransactions", []interface{}{batchedTransactions, config})
 	if err != nil {
 		return nil, err
 	}
