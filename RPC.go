@@ -454,8 +454,8 @@ type TxResponse struct {
 }
 
 type BatchResults struct {
-	Known       []*TxResponse `json:"known"`
-	Evicted     []*TxResponse `json:"evicted"`
+	Known       []string      `json:"known"`
+	Evicted     []string      `json:"evicted"`
 	Invalid     []*TxResponse `json:"invalid"`
 	Unconfirmed []*TxResponse `json:"unconfirmed"`
 }
@@ -497,7 +497,7 @@ func (b *Bitcoind) SendRawTransactionWithoutFeeCheckOrScriptCheck(raw string) (s
 	}
 
 	if len(res.Known) > 0 {
-		return res.Known[0].TxID, nil
+		return res.Known[0], nil
 	} else if len(res.Unconfirmed) > 0 {
 		return res.Unconfirmed[0].TxID, nil
 	} else if len(res.Evicted) > 0 {
