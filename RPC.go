@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"strconv"
 	"strings"
@@ -19,14 +20,29 @@ import (
 
 // A Bitcoind represents a Bitcoind client
 type Bitcoind struct {
-	client  *rpcClient
-	Storage *cache.Cache
-	group   singleflight.Group
+	client    *rpcClient
+	Storage   *cache.Cache
+	group     singleflight.Group
+	IPAddress string
 }
 
 // New return a new bitcoind
 func New(host string, port int, user, passwd string, useSSL bool) (*Bitcoind, error) {
-	rpcClient, err := newClient(host, port, user, passwd, useSSL)
+	ips, err := net.LookupIP(host)
+	if err != nil || len(ips) == 0 {
+		return nil, fmt.Errorf("Could not resolve %q: %v", host, err)
+	}
+
+	var ip string
+
+	for _, i := range ips {
+		if i.To4() != nil {
+			ip = i.String()
+			break
+		}
+	}
+
+	rpcClient, err := newClient(ip, port, user, passwd, useSSL)
 	if err != nil {
 		return nil, err
 	}
@@ -35,9 +51,10 @@ func New(host string, port int, user, passwd string, useSSL bool) (*Bitcoind, er
 	cleanupInterval := 10 * time.Second
 
 	return &Bitcoind{
-		client:  rpcClient,
-		Storage: cache.New(defaultExpiration, cleanupInterval),
-		group:   singleflight.Group{},
+		client:    rpcClient,
+		Storage:   cache.New(defaultExpiration, cleanupInterval),
+		group:     singleflight.Group{},
+		IPAddress: ip,
 	}, nil
 }
 

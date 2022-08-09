@@ -6,13 +6,14 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io"
+	"net"
 	"strings"
 	"testing"
 	"time"
 )
 
 func TestGetBlockChainInfo(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -26,7 +27,7 @@ func TestGetBlockChainInfo(t *testing.T) {
 }
 
 func TestGetConnectionCount(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -40,7 +41,7 @@ func TestGetConnectionCount(t *testing.T) {
 }
 
 func TestGetNetworkInfo(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -51,10 +52,11 @@ func TestGetNetworkInfo(t *testing.T) {
 		t.FailNow()
 	}
 	t.Logf("%#v", res)
+	t.Logf("Actual IP was %s", b.IPAddress)
 }
 
 func TestGetNetTotals(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -67,7 +69,7 @@ func TestGetNetTotals(t *testing.T) {
 	t.Logf("%#v", res)
 }
 func TestMiningInfo(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -81,7 +83,7 @@ func TestMiningInfo(t *testing.T) {
 }
 
 func TestUptime(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -95,7 +97,7 @@ func TestUptime(t *testing.T) {
 }
 
 func TestGetPeerInfo(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -109,7 +111,7 @@ func TestGetPeerInfo(t *testing.T) {
 }
 
 func TestGetRawMempoolWithDetails(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -123,7 +125,7 @@ func TestGetRawMempoolWithDetails(t *testing.T) {
 }
 
 func TestGetRawMempoolNoDetails(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -137,7 +139,7 @@ func TestGetRawMempoolNoDetails(t *testing.T) {
 }
 
 func TestGetMempoolInfo(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -151,7 +153,7 @@ func TestGetMempoolInfo(t *testing.T) {
 }
 
 func TestGetChainTxStats(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -165,7 +167,7 @@ func TestGetChainTxStats(t *testing.T) {
 }
 
 func TestValidateAddress(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -179,7 +181,7 @@ func TestValidateAddress(t *testing.T) {
 }
 
 func TestHelp(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -193,7 +195,7 @@ func TestHelp(t *testing.T) {
 }
 
 func TestGetBestBlockHash(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -207,7 +209,7 @@ func TestGetBestBlockHash(t *testing.T) {
 }
 
 func TestGetBlockHash(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -235,7 +237,7 @@ func TestSendRawTransaction2(t *testing.T) {
 }
 
 func TestSendRawTransaction(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -249,7 +251,7 @@ func TestSendRawTransaction(t *testing.T) {
 }
 
 func TestSendRawTransactionWithoutFeeCheckOrScriptCheck(t *testing.T) {
-	b, err := New("localhost", 18332, "bitcoin", "bitcoin", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -263,7 +265,7 @@ func TestSendRawTransactionWithoutFeeCheckOrScriptCheck(t *testing.T) {
 }
 
 func TestGetBlockOverview(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -277,7 +279,7 @@ func TestGetBlockOverview(t *testing.T) {
 }
 
 func TestGetBlock(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -291,7 +293,7 @@ func TestGetBlock(t *testing.T) {
 }
 
 func TestGetBlockByHeight(t *testing.T) {
-	b, err := New("localhost", 18332, "bitcoin", "bitcoin", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -305,7 +307,7 @@ func TestGetBlockByHeight(t *testing.T) {
 }
 
 func TestGetBlockStatsByHeight(t *testing.T) {
-	b, err := New("localhost", 18332, "bitcoin", "bitcoin", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -319,7 +321,7 @@ func TestGetBlockStatsByHeight(t *testing.T) {
 }
 
 func TestGetBlockStats(t *testing.T) {
-	b, err := New("localhost", 18332, "bitcoin", "bitcoin", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -333,7 +335,7 @@ func TestGetBlockStats(t *testing.T) {
 }
 
 func TestGetGenesisBlock(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -347,7 +349,7 @@ func TestGetGenesisBlock(t *testing.T) {
 }
 
 func TestGetBlockHex(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -361,7 +363,7 @@ func TestGetBlockHex(t *testing.T) {
 }
 
 func TestGetBlockHeaderHex(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -375,7 +377,7 @@ func TestGetBlockHeaderHex(t *testing.T) {
 }
 
 func TestGetBlockHeader(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -389,7 +391,7 @@ func TestGetBlockHeader(t *testing.T) {
 }
 
 func TestGetBlockHeaderAndCoinbase(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -403,7 +405,7 @@ func TestGetBlockHeaderAndCoinbase(t *testing.T) {
 }
 
 func TestGetRawTransaction(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -417,7 +419,7 @@ func TestGetRawTransaction(t *testing.T) {
 }
 
 func TestGetRawTransactionHex(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -430,7 +432,7 @@ func TestGetRawTransactionHex(t *testing.T) {
 	t.Logf("%#v", *tx)
 }
 func TestGetDifficulty(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -444,7 +446,7 @@ func TestGetDifficulty(t *testing.T) {
 }
 
 func TestGetBlockTemplate(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -460,7 +462,7 @@ func TestGetBlockTemplate(t *testing.T) {
 }
 
 func TestGetMiningCandidate(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -489,7 +491,7 @@ func TestGetTxOut(t *testing.T) {
 }
 
 func TestSubmitBlock(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -503,7 +505,7 @@ func TestSubmitBlock(t *testing.T) {
 }
 
 func TestSubmitMiningSolution(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -525,7 +527,7 @@ func TestSubmitMiningSolution(t *testing.T) {
 }
 
 func TestDecodeRawTransactionHex(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -539,7 +541,7 @@ func TestDecodeRawTransactionHex(t *testing.T) {
 }
 
 func TestListUnspent(t *testing.T) {
-	b, err := New("localhost", 18332, "bitcoin", "bitcoin", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -556,7 +558,7 @@ func TestListUnspent(t *testing.T) {
 }
 
 func TestSendToAddress(t *testing.T) {
-	b, err := New("localhost", 18332, "bitcoin", "bitcoin", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -571,7 +573,7 @@ func TestSendToAddress(t *testing.T) {
 }
 
 func TestGetRawBlock(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "Yv5Nua9wLQyhHEUyHtSecMawAEgFlLp4s", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -594,7 +596,7 @@ func TestGetRawBlock(t *testing.T) {
 }
 
 func TestGetRawBlockRest(t *testing.T) {
-	b, err := New("localhost", 18332, "bitcoin", "bitcoin", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -617,7 +619,7 @@ func TestGetRawBlockRest(t *testing.T) {
 }
 
 func TestGetRawTransactionRest(t *testing.T) {
-	b, err := New("localhost", 18332, "bitcoin", "bitcoin", false)
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -768,4 +770,16 @@ func TestGetTime(t *testing.T) {
 
 	t.Logf("2. %s - Took %s\n", keyfunc2(method, params), time.Since(start))
 
+}
+
+func TestDNS(t *testing.T) {
+	ips, err := net.LookupIP("google.com")
+	if err != nil || len(ips) == 0 {
+		t.Error(err)
+		t.FailNow()
+	}
+
+	for _, i := range ips {
+		t.Logf("%t, %#v", i.To4() != nil, i.String())
+	}
 }

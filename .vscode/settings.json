@@ -1,6 +1,7 @@
 {
   "cSpell.words": [
     "currentblocktx",
+    "discardedfrommempool",
     "Divf",
     "Dont",
     "dontcheckfee",
@@ -9,6 +10,7 @@
     "getblockbyheight",
     "getchaintxstats",
     "gettxout",
+    "hashblock",
     "hashtx",
     "invalidtx",
     "Merkle",
@@ -17,7 +19,9 @@
     "ordish",
     "patrickmn",
     "paytxfee",
+    "rawblock",
     "rawtx",
+    "removedfrommempoolblock",
     "Segwit",
     "Sigs",
     "totalbytesrecv",
