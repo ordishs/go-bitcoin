@@ -420,19 +420,19 @@ type BlockTxid struct {
 
 // RawTransaction comment
 type RawTransaction struct {
-	Hex           string `json:"hex,omitempty"`
-	TxID          string `json:"txid"`
-	Hash          string `json:"hash"`
-	Version       int32  `json:"version"`
-	Size          uint32 `json:"size"`
-	LockTime      uint32 `json:"locktime"`
-	Vin           []Vin  `json:"vin"`
-	Vout          []Vout `json:"vout"`
-	BlockHash     string `json:"blockhash,omitempty"`
-	Confirmations uint32 `json:"confirmations,omitempty"`
-	Time          int64  `json:"time,omitempty"`
-	Blocktime     int64  `json:"blocktime,omitempty"`
-	BlockHeight   uint64 `json:"blockheight,omitempty"`
+	Hex           string  `json:"hex,omitempty"`
+	TxID          string  `json:"txid"`
+	Hash          string  `json:"hash"`
+	Version       int32   `json:"version"`
+	Size          uint32  `json:"size"`
+	LockTime      uint32  `json:"locktime"`
+	Vin           []*Vin  `json:"vin"`
+	Vout          []*Vout `json:"vout"`
+	BlockHash     string  `json:"blockhash,omitempty"`
+	Confirmations uint32  `json:"confirmations,omitempty"`
+	Time          int64   `json:"time,omitempty"`
+	Blocktime     int64   `json:"blocktime,omitempty"`
+	BlockHeight   uint64  `json:"blockheight,omitempty"`
 }
 
 // Vout represent an OUT value
