@@ -24,6 +24,19 @@ type ZMQ struct {
 	subscriptions map[string][]chan []string
 }
 
+// type option func(*ZMQ)
+
+// func WithLogger(l Logger) option {
+// 	return func(f *ZMQ) {
+// 		logger = l
+// 	}
+// }
+
+func (zmq *ZMQ) WithLogger(l Logger) *ZMQ {
+	logger = l
+	return zmq
+}
+
 // NewZMQ comment
 func NewZMQ(host string, port int) *ZMQ {
 	return newZMQ(host, port, false, "hash")
@@ -65,7 +78,7 @@ func newZMQ(host string, port int, rawRequired bool, optionValue string) *ZMQ {
 				zmq.mu.Lock()
 				zmq.err = err
 				zmq.mu.Unlock()
-				log.Printf("Attempting to re-establish ZMQ connection in 5 seconds...")
+				logger.Infof("Attempting to re-establish ZMQ connection in 5 seconds...")
 				time.Sleep(10 * time.Second)
 				continue
 			}
@@ -82,23 +95,23 @@ func newZMQ(host string, port int, rawRequired bool, optionValue string) *ZMQ {
 				}
 			}
 
-			log.Printf("ZMQ: Subscribing to %s", zmq.address)
-
 			//  0MQ is so fast, we need to wait a while...
 			time.Sleep(time.Second)
+
+			logger.Infof("ZMQ: Subscribing to %s", zmq.address)
 
 			for {
 				msg, err := zmq.socket.Recv()
 				if err != nil {
-					log.Printf("ERROR from zmq.socket.Recv() - %v\n", err)
+					logger.Errorf("zmq.socket.Recv() - %v\n", err)
 					break
 				} else {
 					if !zmq.connected {
 						zmq.connected = true
-						log.Printf("ZMQ: Subscription to %s established\n", zmq.address)
+						logger.Infof("ZMQ: Subscription to %s established\n", zmq.address)
 					}
 
-					// log.Printf("%s: %s", string(msg.Frames[0]), hex.EncodeToString(msg.Frames[1]))
+					// logger.Debugf("%s: %s", string(msg.Frames[0]), hex.EncodeToString(msg.Frames[1]))
 					zmq.mu.RLock()
 					subscribers := zmq.subscriptions[string(msg.Frames[0])]
 

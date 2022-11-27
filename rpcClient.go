@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/http/httptrace"
 	"net/http/httputil"
@@ -54,9 +53,9 @@ type rpcResponse struct {
 
 func debug(data []byte, err error) {
 	if err == nil {
-		log.Printf("%s\n\n", data)
+		logger.Infof("%s\n\n", data)
 	} else {
-		log.Printf("ERROR: %s\n\n", err)
+		logger.Errorf("ERROR: %s\n\n", err)
 	}
 }
 
@@ -127,10 +126,10 @@ func (c *rpcClient) call(method string, params interface{}) (rpcResponse, error)
 	if os.Getenv("HTTP_TRACE") == "TRUE" {
 		trace := &httptrace.ClientTrace{
 			DNSDone: func(dnsInfo httptrace.DNSDoneInfo) {
-				log.Printf("HTTP_TRACE - DNS: %+v\n", dnsInfo)
+				logger.Debugf("HTTP_TRACE - DNS: %+v\n", dnsInfo)
 			},
 			GotConn: func(connInfo httptrace.GotConnInfo) {
-				log.Printf("HTTP_TRACE - Conn: %+v\n", connInfo)
+				logger.Debugf("HTTP_TRACE - Conn: %+v\n", connInfo)
 			}}
 		ctxTrace := httptrace.WithClientTrace(req.Context(), trace)
 
