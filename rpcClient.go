@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptrace"
 	"net/http/httputil"
@@ -150,7 +149,7 @@ func (c *rpcClient) call(method string, params interface{}) (rpcResponse, error)
 	}
 	defer resp.Body.Close()
 
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return rpcResponse{}, fmt.Errorf("failed to read response: %w", err)
 	}
@@ -211,7 +210,7 @@ func (c *rpcClient) read(method string, params interface{}) (io.ReadCloser, erro
 		defer resp.Body.Close()
 
 		var rr rpcResponse
-		data, err := ioutil.ReadAll(resp.Body)
+		data, err := io.ReadAll(resp.Body)
 
 		if err != nil {
 			return nil, fmt.Errorf("failed to read response: %w", err)

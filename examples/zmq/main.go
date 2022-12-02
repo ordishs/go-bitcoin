@@ -1,8 +1,9 @@
 package main
 
 import (
+	"log"
+
 	"github.com/ordishs/go-bitcoin"
-	"github.com/ordishs/gocore"
 )
 
 func main() {
@@ -12,16 +13,16 @@ func main() {
 
 	go func() {
 		for c := range ch {
-			logger.Infof("%v", c)
+			log.Printf("%v", c)
 		}
 	}()
 
 	if err := zmq.Subscribe("hashtx", ch); err != nil {
-		logger.Fatalf("%v", err)
+		log.Fatalf("%v", err)
 	}
 
 	if err := zmq.Subscribe("hashblock", ch); err != nil {
-		logger.Fatalf("%v", err)
+		log.Fatalf("%v", err)
 	}
 
 	waitCh := make(chan bool)

@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net"
 	"net/http"
 	"strconv"
@@ -650,7 +649,7 @@ func (b *Bitcoind) GetRawBlockRest(blockHash string) (io.ReadCloser, error) {
 	if resp.StatusCode != 200 {
 		defer resp.Body.Close()
 
-		data, err := ioutil.ReadAll(resp.Body)
+		data, err := io.ReadAll(resp.Body)
 
 		if err != nil {
 			return nil, fmt.Errorf("failed to read response body: %w", err)
@@ -823,7 +822,7 @@ func (b *Bitcoind) GetRawTransactionRest(txid string) (io.ReadCloser, error) {
 	if resp.StatusCode != 200 {
 		defer resp.Body.Close()
 
-		data, err := ioutil.ReadAll(resp.Body)
+		data, err := io.ReadAll(resp.Body)
 
 		if err != nil {
 			return nil, fmt.Errorf("failed to read response body: %w", err)
