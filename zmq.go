@@ -30,12 +30,11 @@ type ZMQ struct {
 	removeSubscription chan subscriptionRequest
 }
 
-func (zmq *ZMQ) WithLogger(l Logger) *ZMQ {
-	logger = l
-	return zmq
-}
+func NewZMQ(host string, port int, optionalLogger ...Logger) *ZMQ {
+	if len(optionalLogger) > 0 {
+		logger = optionalLogger[0]
+	}
 
-func NewZMQ(host string, port int) *ZMQ {
 	zmq := &ZMQ{
 		address:            fmt.Sprintf("tcp://%s:%d", host, port),
 		subscriptions:      make(map[string][]chan []string),
