@@ -189,6 +189,15 @@ type MempoolInfo struct {
 	MemPoolMinFree float64 `json:"mempoolminfee"`
 }
 
+type MempoolEntry struct {
+	Size        int      `json:"size"`
+	Fee         float64  `json:"fee"`
+	ModifiedFee float64  `json:"modifiedfee"`
+	Time        int      `json:"time"`
+	Height      int      `json:"height"`
+	Depends     []string `json:"depends"`
+}
+
 // ChainTXStats struct
 type ChainTXStats struct {
 	Time             int     `json:"time"`
