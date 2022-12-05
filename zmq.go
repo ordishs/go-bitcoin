@@ -12,7 +12,7 @@ import (
 	"github.com/go-zeromq/zmq4"
 )
 
-var allowedTopics = []string{"hashblock", "hashtx", "rawblock", "rawtx", "discardedfrommempool", "removedfrommempoolblock", "invalidtx"}
+var allowedTopics = []string{"hashblock", "hashtx", "hashtx2", "rawblock", "rawtx", "rawtx2", "discardedfrommempool", "removedfrommempoolblock", "invalidtx"}
 
 type subscriptionRequest struct {
 	topic string
