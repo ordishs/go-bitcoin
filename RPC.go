@@ -254,7 +254,7 @@ func (b *Bitcoind) GetMempoolInfo() (info MempoolInfo, err error) {
 	return
 }
 
-// GetMempoolEntry comment
+// GetMempoolEntry returns the entry in the current mempool for a specific tx id
 func (b *Bitcoind) GetMempoolEntry(txid string) (entry MempoolEntry, err error) {
 	p := []interface{}{txid}
 	r, err := b.call("getmempoolentry", p)
