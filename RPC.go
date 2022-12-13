@@ -254,6 +254,24 @@ func (b *Bitcoind) GetMempoolInfo() (info MempoolInfo, err error) {
 	return
 }
 
+// GetMempoolEntry returns the entry in the current mempool for a specific tx id
+func (b *Bitcoind) GetMempoolEntry(txid string) (entry MempoolEntry, err error) {
+	p := []interface{}{txid}
+	r, err := b.call("getmempoolentry", p)
+	if err != nil {
+		return
+	}
+
+	if r.Err != nil {
+		rr := r.Err.(map[string]interface{})
+		err = fmt.Errorf("ERROR %s: %s", rr["code"], rr["message"])
+		return
+	}
+
+	err = json.Unmarshal(r.Result, &entry)
+	return
+}
+
 // GetRawMempool returns the number of connections to other nodes.
 func (b *Bitcoind) GetRawMempool(details bool) (raw []byte, err error) {
 	p := []interface{}{details}
