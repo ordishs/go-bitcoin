@@ -8,6 +8,7 @@ import (
 	"io"
 	"net"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 	"time"
@@ -23,6 +24,17 @@ type Bitcoind struct {
 	Storage   *cache.Cache
 	group     singleflight.Group
 	IPAddress string
+}
+
+func NewFromURL(url *url.URL, useSSL bool) (*Bitcoind, error) {
+	port, err := strconv.Atoi(url.Port())
+	if err != nil {
+		return nil, err
+	}
+
+	password, _ := url.User.Password()
+
+	return New(url.Hostname(), port, url.User.Username(), password, useSSL)
 }
 
 // New return a new bitcoind
