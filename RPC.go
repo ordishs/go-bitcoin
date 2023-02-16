@@ -148,6 +148,23 @@ func (b *Bitcoind) GetInfo() (info GetInfo, err error) {
 	return
 }
 
+// GetInfo returns the number of connections to other nodes.
+func (b *Bitcoind) GetSettings() (info GetSettings, err error) {
+	r, err := b.call("getsettings", nil)
+	if err != nil {
+		return
+	}
+
+	if r.Err != nil {
+		rr := r.Err.(map[string]interface{})
+		err = fmt.Errorf("ERROR %s: %s", rr["code"], rr["message"])
+		return
+	}
+
+	err = json.Unmarshal(r.Result, &info)
+	return
+}
+
 // GetNetworkInfo returns the number of connections to other nodes.
 func (b *Bitcoind) GetNetworkInfo() (info NetworkInfo, err error) {
 	r, err := b.call("getnetworkinfo", nil)

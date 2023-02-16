@@ -475,6 +475,20 @@ func TestGetMiningCandidate(t *testing.T) {
 	t.Logf("%#v", template)
 }
 
+func TestGetSettings(t *testing.T) {
+	b, err := New("localhost", 18332, "bitcoin", "bitcoin", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	template, err := b.GetSettings()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("%#v", template)
+}
+
 func TestGetTxOut(t *testing.T) {
 	b, err := New("localhost", 8332, "bitcoin", "password", false)
 	if err != nil {

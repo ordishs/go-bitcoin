@@ -44,6 +44,38 @@ type GetInfo struct {
 	MaxStackMemoryUsageConsensus uint64  `json:"maxstackmemoryusageconsensus"`
 }
 
+type GetSettings struct {
+	ExcessiveBlockSize              int     `json:"excessiveblocksize"`
+	BlockMaxSize                    int     `json:"blockmaxsize"`
+	MaxTxSizePolicy                 int     `json:"maxtxsizepolicy"`
+	MaxOrphanTxSize                 int     `json:"maxorphantxsize"`
+	DataCarrierSize                 int64   `json:"datacarriersize"`
+	MaxScriptSizePolicy             int     `json:"maxscriptsizepolicy"`
+	MaxOpsPerScriptPolicy           int64   `json:"maxopsperscriptpolicy"`
+	MaxScriptNumLengthPolicy        int     `json:"maxscriptnumlengthpolicy"`
+	MaxPubKeysPerMultisigPolicy     int64   `json:"maxpubkeyspermultisigpolicy"`
+	MaxTxSigopsCountsPolicy         int64   `json:"maxtxsigopscountspolicy"`
+	MaxStackMemoryUsagePolicy       int     `json:"maxstackmemoryusagepolicy"`
+	MaxStackMemoryUsageConsensus    int     `json:"maxstackmemoryusageconsensus"`
+	LimitAncestorCount              int     `json:"limitancestorcount"`
+	LimitCPFPGroupMembersCount      int     `json:"limitcpfpgroupmemberscount"`
+	MaxMempool                      int     `json:"maxmempool"`
+	MaxMempoolSizedisk              int     `json:"maxmempoolsizedisk"`
+	MempoolMaxPercentCPFP           int     `json:"mempoolmaxpercentcpfp"`
+	AcceptNonStdOutputs             bool    `json:"acceptnonstdoutputs"`
+	DataCarrier                     bool    `json:"datacarrier"`
+	MinMiningTxFee                  float64 `json:"minminingtxfee"`
+	MaxStdTxValidationDuration      int     `json:"maxstdtxvalidationduration"`
+	MaxNonStdTxValidationDuration   int     `json:"maxnonstdtxvalidationduration"`
+	MaxTxChainValidationBudget      int     `json:"maxtxchainvalidationbudget"`
+	ValidationClockCpu              bool    `json:"validationclockcpu"`
+	MinConsolidationFactor          int     `json:"minconsolidationfactor"`
+	MaxConsolidationInputScriptSize int     `json:"maxconsolidationinputscriptsize"`
+	MinConfConsolidationInput       int     `json:"minconfconsolidationinput"`
+	MinConsolidationInputMaturity   int     `json:"minconsolidationinputmaturity"`
+	AcceptNonStdConsolidationInput  bool    `json:"acceptnonstdconsolidationinput"`
+}
+
 type Tip struct {
 	Height    uint64 `json:"height"`
 	Hash      string `json:"hash"`
