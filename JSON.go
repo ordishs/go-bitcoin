@@ -44,7 +44,7 @@ type GetInfo struct {
 	MaxStackMemoryUsageConsensus uint64  `json:"maxstackmemoryusageconsensus"`
 }
 
-type GetSettings struct {
+type Settings struct {
 	ExcessiveBlockSize              int     `json:"excessiveblocksize"`
 	BlockMaxSize                    int     `json:"blockmaxsize"`
 	MaxTxSizePolicy                 int     `json:"maxtxsizepolicy"`

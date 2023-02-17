@@ -149,7 +149,7 @@ func (b *Bitcoind) GetInfo() (info GetInfo, err error) {
 }
 
 // GetInfo returns the number of connections to other nodes.
-func (b *Bitcoind) GetSettings() (info GetSettings, err error) {
+func (b *Bitcoind) GetSettings() (settings Settings, err error) {
 	r, err := b.call("getsettings", nil)
 	if err != nil {
 		return
@@ -161,7 +161,7 @@ func (b *Bitcoind) GetSettings() (info GetSettings, err error) {
 		return
 	}
 
-	err = json.Unmarshal(r.Result, &info)
+	err = json.Unmarshal(r.Result, &settings)
 	return
 }
 
