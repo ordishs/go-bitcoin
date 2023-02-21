@@ -28,18 +28,21 @@ type ZMQ struct {
 	subscriptions      map[string][]chan []string
 	addSubscription    chan subscriptionRequest
 	removeSubscription chan subscriptionRequest
+	logger             Logger
 }
 
 func NewZMQ(host string, port int, optionalLogger ...Logger) *ZMQ {
-	if len(optionalLogger) > 0 {
-		logger = optionalLogger[0]
-	}
 
 	zmq := &ZMQ{
 		address:            fmt.Sprintf("tcp://%s:%d", host, port),
 		subscriptions:      make(map[string][]chan []string),
 		addSubscription:    make(chan subscriptionRequest, 10),
 		removeSubscription: make(chan subscriptionRequest, 10),
+		logger:             &DefaultLogger{},
+	}
+
+	if len(optionalLogger) > 0 {
+		zmq.logger = optionalLogger[0]
 	}
 
 	go zmq.start()
@@ -85,20 +88,20 @@ func (zmq *ZMQ) start() {
 
 		if err := zmq.socket.Dial(zmq.address); err != nil {
 			zmq.err = err
-			logger.Errorf("Could not dial ZMQ at %s: %v", zmq.address, err)
-			logger.Infof("Attempting to re-establish ZMQ connection in 10 seconds...")
+			zmq.logger.Errorf("Could not dial ZMQ at %s: %v", zmq.address, err)
+			zmq.logger.Infof("Attempting to re-establish ZMQ connection in 10 seconds...")
 			time.Sleep(10 * time.Second)
 			continue
 		}
 
-		logger.Infof("ZMQ: Connecting to %s", zmq.address)
+		zmq.logger.Infof("ZMQ: Connecting to %s", zmq.address)
 
 		for topic := range zmq.subscriptions {
 			if err := zmq.socket.SetOption(zmq4.OptionSubscribe, topic); err != nil {
 				zmq.err = fmt.Errorf("%+v", err)
 				return
 			}
-			logger.Infof("ZMQ: Subscribed to %s", topic)
+			zmq.logger.Infof("ZMQ: Subscribed to %s", topic)
 		}
 
 	OUT:
@@ -106,9 +109,9 @@ func (zmq *ZMQ) start() {
 			select {
 			case req := <-zmq.addSubscription:
 				if err := zmq.socket.SetOption(zmq4.OptionSubscribe, req.topic); err != nil {
-					logger.Errorf("ZMQ: Failed to subscribe to %s", req.topic)
+					zmq.logger.Errorf("ZMQ: Failed to subscribe to %s", req.topic)
 				} else {
-					logger.Infof("ZMQ: Subscribed to %s", req.topic)
+					zmq.logger.Infof("ZMQ: Subscribed to %s", req.topic)
 				}
 
 				subscribers := zmq.subscriptions[req.topic]
@@ -121,7 +124,7 @@ func (zmq *ZMQ) start() {
 				for i, subscriber := range subscribers {
 					if subscriber == req.ch {
 						subscribers = append(subscribers[:i], subscribers[i+1:]...)
-						logger.Infof("Removed subscription from %s topic", req.topic)
+						zmq.logger.Infof("Removed subscription from %s topic", req.topic)
 						break
 					}
 				}
@@ -130,12 +133,12 @@ func (zmq *ZMQ) start() {
 			default:
 				msg, err := zmq.socket.Recv()
 				if err != nil {
-					logger.Errorf("zmq.socket.Recv() - %v\n", err)
+					zmq.logger.Errorf("zmq.socket.Recv() - %v\n", err)
 					break OUT
 				} else {
 					if !zmq.connected {
 						zmq.connected = true
-						logger.Infof("ZMQ: Connection to %s observed\n", zmq.address)
+						zmq.logger.Infof("ZMQ: Connection to %s observed\n", zmq.address)
 					}
 
 					subscribers := zmq.subscriptions[string(msg.Frames[0])]

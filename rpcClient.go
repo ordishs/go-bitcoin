@@ -27,6 +27,7 @@ type rpcClient struct {
 	user       string
 	passwd     string
 	httpClient *http.Client
+	logger     Logger
 }
 
 // rpcRequest represent a RCP request
@@ -50,15 +51,15 @@ type rpcResponse struct {
 	Err    interface{}     `json:"error"`
 }
 
-func debug(data []byte, err error) {
+func (c *rpcClient) debug(data []byte, err error) {
 	if err == nil {
-		logger.Infof("%s\n\n", data)
+		c.logger.Infof("%s\n\n", data)
 	} else {
-		logger.Errorf("ERROR: %s\n\n", err)
+		c.logger.Errorf("ERROR: %s\n\n", err)
 	}
 }
 
-func newClient(host string, port int, user, passwd string, useSSL bool) (c *rpcClient, err error) {
+func newClient(host string, port int, user, passwd string, useSSL bool, optionalLogger ...Logger) (c *rpcClient, err error) {
 	if len(host) == 0 {
 		err = errors.New("Bad call missing argument host")
 		return
@@ -75,7 +76,18 @@ func newClient(host string, port int, user, passwd string, useSSL bool) (c *rpcC
 		serverAddr = "http://"
 		httpClient = &http.Client{}
 	}
-	c = &rpcClient{serverAddr: fmt.Sprintf("%s%s:%d", serverAddr, host, port), user: user, passwd: passwd, httpClient: httpClient}
+	c = &rpcClient{
+		serverAddr: fmt.Sprintf("%s%s:%d", serverAddr, host, port),
+		user:       user,
+		passwd:     passwd,
+		httpClient: httpClient,
+		logger:     &DefaultLogger{},
+	}
+
+	if len(optionalLogger) > 0 {
+		c.logger = optionalLogger[0]
+	}
+
 	return
 }
 
@@ -88,7 +100,7 @@ func (c *rpcClient) doTimeoutRequest(timer *time.Timer, req *http.Request) (*htt
 	done := make(chan result, 1)
 	go func() {
 		if debugHttp == "true" {
-			debug(httputil.DumpRequestOut(req, debugHttpDumpBody == "true"))
+			c.debug(httputil.DumpRequestOut(req, debugHttpDumpBody == "true"))
 		}
 		resp, err := c.httpClient.Do(req)
 		done <- result{resp, err}
@@ -97,7 +109,7 @@ func (c *rpcClient) doTimeoutRequest(timer *time.Timer, req *http.Request) (*htt
 	select {
 	case r := <-done:
 		if debugHttp == "true" {
-			debug(httputil.DumpResponse(r.resp, debugHttpDumpBody == "true"))
+			c.debug(httputil.DumpResponse(r.resp, debugHttpDumpBody == "true"))
 		}
 		return r.resp, r.err
 	case <-timer.C:
@@ -125,10 +137,10 @@ func (c *rpcClient) call(method string, params interface{}) (rpcResponse, error)
 	if os.Getenv("HTTP_TRACE") == "TRUE" {
 		trace := &httptrace.ClientTrace{
 			DNSDone: func(dnsInfo httptrace.DNSDoneInfo) {
-				logger.Debugf("HTTP_TRACE - DNS: %+v\n", dnsInfo)
+				c.logger.Debugf("HTTP_TRACE - DNS: %+v\n", dnsInfo)
 			},
 			GotConn: func(connInfo httptrace.GotConnInfo) {
-				logger.Debugf("HTTP_TRACE - Conn: %+v\n", connInfo)
+				c.logger.Debugf("HTTP_TRACE - Conn: %+v\n", connInfo)
 			}}
 		ctxTrace := httptrace.WithClientTrace(req.Context(), trace)
 

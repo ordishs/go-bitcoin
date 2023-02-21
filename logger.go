@@ -44,5 +44,3 @@ func (l *DefaultLogger) Fatalf(format string, args ...interface{}) {
 	f := fmt.Sprintf("FATAL: %s", format)
 	log.Printf(f, args...)
 }
-
-var logger Logger = &DefaultLogger{}
