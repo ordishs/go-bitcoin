@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/binary"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"log"
 	"strconv"
@@ -32,6 +33,12 @@ type ZMQ struct {
 }
 
 func NewZMQ(host string, port int, optionalLogger ...Logger) *ZMQ {
+	ctx := context.Background()
+
+	return NewZMQWithContext(ctx, host, port, optionalLogger...)
+}
+
+func NewZMQWithContext(ctx context.Context, host string, port int, optionalLogger ...Logger) *ZMQ {
 
 	zmq := &ZMQ{
 		address:            fmt.Sprintf("tcp://%s:%d", host, port),
@@ -45,7 +52,7 @@ func NewZMQ(host string, port int, optionalLogger ...Logger) *ZMQ {
 		zmq.logger = optionalLogger[0]
 	}
 
-	go zmq.start()
+	go zmq.start(ctx)
 
 	return zmq
 }
@@ -76,9 +83,9 @@ func (zmq *ZMQ) Unsubscribe(topic string, ch chan []string) error {
 	return nil
 }
 
-func (zmq *ZMQ) start() {
+func (zmq *ZMQ) start(ctx context.Context) {
 	for {
-		zmq.socket = zmq4.NewSub(context.Background(), zmq4.WithID(zmq4.SocketIdentity("sub")))
+		zmq.socket = zmq4.NewSub(ctx, zmq4.WithID(zmq4.SocketIdentity("sub")))
 		defer func() {
 			if zmq.connected {
 				zmq.socket.Close()
@@ -107,6 +114,9 @@ func (zmq *ZMQ) start() {
 	OUT:
 		for {
 			select {
+			case <-ctx.Done():
+				zmq.logger.Infof("ZMQ: Context done, exiting")
+				return
 			case req := <-zmq.addSubscription:
 				if err := zmq.socket.SetOption(zmq4.OptionSubscribe, req.topic); err != nil {
 					zmq.logger.Errorf("ZMQ: Failed to subscribe to %s", req.topic)
@@ -133,6 +143,9 @@ func (zmq *ZMQ) start() {
 			default:
 				msg, err := zmq.socket.Recv()
 				if err != nil {
+					if errors.Is(err, context.Canceled) {
+						return
+					}
 					zmq.logger.Errorf("zmq.socket.Recv() - %v\n", err)
 					break OUT
 				} else {
