@@ -26,6 +26,7 @@ type GetInfo struct {
 	ProtocolVersion              int32   `json:"protocolversion"`
 	WalletVersion                int32   `json:"walletversion"`
 	Balance                      float64 `json:"balance"`
+	InitComplete                 bool    `json:"initcomplete"`
 	Blocks                       int32   `json:"blocks"`
 	TimeOffset                   int64   `json:"timeoffset"`
 	Connections                  int32   `json:"connections"`
