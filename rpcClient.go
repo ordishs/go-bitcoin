@@ -18,8 +18,11 @@ const (
 	rpcClientTimeoutSecondsDefault = 120
 )
 
-var debugHttp = os.Getenv("debug_http")
-var debugHttpDumpBody = os.Getenv("debug_http_dump_body")
+var (
+	ErrTimeout        = errors.New("Timeout reading data from server")
+	debugHttpDumpBody = os.Getenv("debug_http_dump_body")
+	debugHttp         = os.Getenv("debug_http")
+)
 
 // A rpcClient represents a JSON RPC client (over HTTP(s)).
 type rpcClient struct {
@@ -130,7 +133,7 @@ func (c *rpcClient) doTimeoutRequest(timer *time.Timer, req *http.Request) (*htt
 		}
 		return r.resp, r.err
 	case <-timer.C:
-		return nil, fmt.Errorf("Timeout reading data from server after %s", c.rpcClientTimeout.String())
+		return nil, ErrTimeout
 	}
 }
 
