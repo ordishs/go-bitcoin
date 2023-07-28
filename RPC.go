@@ -26,7 +26,7 @@ type Bitcoind struct {
 	IPAddress string
 }
 
-func NewFromURL(url *url.URL, useSSL bool) (*Bitcoind, error) {
+func NewFromURL(url *url.URL, useSSL bool, opts ...Option) (*Bitcoind, error) {
 	port, err := strconv.Atoi(url.Port())
 	if err != nil {
 		return nil, err
@@ -34,7 +34,7 @@ func NewFromURL(url *url.URL, useSSL bool) (*Bitcoind, error) {
 
 	password, _ := url.User.Password()
 
-	return New(url.Hostname(), port, url.User.Username(), password, useSSL)
+	return New(url.Hostname(), port, url.User.Username(), password, useSSL, opts...)
 }
 
 // New return a new bitcoind
