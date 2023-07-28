@@ -826,3 +826,14 @@ func TestDNS(t *testing.T) {
 		t.Logf("%t, %#v", i.To4() != nil, i.String())
 	}
 }
+
+func TestErrTimeout(t *testing.T) {
+	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false, WithTimeoutDuration(1*time.Millisecond))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, err = b.ListUnspent([]string{"n38vndTAZKFzc3BtPAJ4mecp44UwAZVski"})
+	require.ErrorIs(t, err, ErrTimeout)
+
+}
