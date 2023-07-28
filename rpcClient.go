@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	rpcClientTimeout = 120
+	rpcClientTimeoutSecondsDefault = 120
 )
 
 var debugHttp = os.Getenv("debug_http")
@@ -23,11 +23,12 @@ var debugHttpDumpBody = os.Getenv("debug_http_dump_body")
 
 // A rpcClient represents a JSON RPC client (over HTTP(s)).
 type rpcClient struct {
-	serverAddr string
-	user       string
-	passwd     string
-	httpClient *http.Client
-	logger     Logger
+	serverAddr       string
+	user             string
+	passwd           string
+	httpClient       *http.Client
+	logger           Logger
+	rpcClientTimeout time.Duration
 }
 
 // rpcRequest represent a RCP request
@@ -59,7 +60,21 @@ func (c *rpcClient) debug(data []byte, err error) {
 	}
 }
 
-func newClient(host string, port int, user, passwd string, useSSL bool, optionalLogger ...Logger) (c *rpcClient, err error) {
+func WithTimeoutDuration(d time.Duration) func(*rpcClient) {
+	return func(p *rpcClient) {
+		p.rpcClientTimeout = d
+	}
+}
+
+func WithOptionalLogger(l Logger) func(*rpcClient) {
+	return func(p *rpcClient) {
+		p.logger = l
+	}
+}
+
+type Option func(f *rpcClient)
+
+func newClient(host string, port int, user, passwd string, useSSL bool, opts ...Option) (c *rpcClient, err error) {
 	if len(host) == 0 {
 		err = errors.New("Bad call missing argument host")
 		return
@@ -77,15 +92,17 @@ func newClient(host string, port int, user, passwd string, useSSL bool, optional
 		httpClient = &http.Client{}
 	}
 	c = &rpcClient{
-		serverAddr: fmt.Sprintf("%s%s:%d", serverAddr, host, port),
-		user:       user,
-		passwd:     passwd,
-		httpClient: httpClient,
-		logger:     &DefaultLogger{},
+		serverAddr:       fmt.Sprintf("%s%s:%d", serverAddr, host, port),
+		user:             user,
+		passwd:           passwd,
+		httpClient:       httpClient,
+		logger:           &DefaultLogger{},
+		rpcClientTimeout: rpcClientTimeoutSecondsDefault * time.Second,
 	}
 
-	if len(optionalLogger) > 0 {
-		c.logger = optionalLogger[0]
+	// apply options to client
+	for _, opt := range opts {
+		opt(c)
 	}
 
 	return
@@ -113,13 +130,13 @@ func (c *rpcClient) doTimeoutRequest(timer *time.Timer, req *http.Request) (*htt
 		}
 		return r.resp, r.err
 	case <-timer.C:
-		return nil, errors.New("Timeout reading data from server")
+		return nil, fmt.Errorf("Timeout reading data from server after %s", c.rpcClientTimeout.String())
 	}
 }
 
 // call prepare & exec the request
 func (c *rpcClient) call(method string, params interface{}) (rpcResponse, error) {
-	connectTimer := time.NewTimer(rpcClientTimeout * time.Second)
+	connectTimer := time.NewTimer(c.rpcClientTimeout)
 	rpcR := rpcRequest{method, params, time.Now().UnixNano(), "1.0"}
 	payloadBuffer := &bytes.Buffer{}
 	jsonEncoder := json.NewEncoder(payloadBuffer)
@@ -190,7 +207,7 @@ func (c *rpcClient) call(method string, params interface{}) (rpcResponse, error)
 
 // call prepare & exec the request
 func (c *rpcClient) read(method string, params interface{}) (io.ReadCloser, error) {
-	connectTimer := time.NewTimer(rpcClientTimeout * time.Second)
+	connectTimer := time.NewTimer(c.rpcClientTimeout)
 	rpcR := rpcRequest{method, params, time.Now().UnixNano(), "1.0"}
 	payloadBuffer := &bytes.Buffer{}
 	jsonEncoder := json.NewEncoder(payloadBuffer)
