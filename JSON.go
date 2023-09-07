@@ -382,6 +382,7 @@ type BlockOverview struct {
 type BlockHeader struct {
 	Hash              string  `json:"hash"`
 	Confirmations     int64   `json:"confirmations"`
+	Size              uint64  `json:"size"`
 	Height            uint64  `json:"height"`
 	Version           uint64  `json:"version"`
 	VersionHex        string  `json:"versionHex"`
@@ -402,10 +403,12 @@ type BlockHeader struct {
 type BlockHeaderAndCoinbase struct {
 	Hash              string           `json:"hash"`
 	Confirmations     int64            `json:"confirmations"`
+	Size              uint64           `json:"size"`
 	Height            uint64           `json:"height"`
 	Version           uint64           `json:"version"`
 	VersionHex        string           `json:"versionHex"`
 	MerkleRoot        string           `json:"merkleroot"`
+	NumTx             uint64           `json:"num_tx"`
 	Time              uint64           `json:"time"`
 	MedianTime        uint64           `json:"mediantime"`
 	Nonce             uint64           `json:"nonce"`
