@@ -658,6 +658,43 @@ func TestGetRawBlockRest(t *testing.T) {
 	t.Log(hex.EncodeToString(data))
 }
 
+func TestSendToNewAddress(t *testing.T) {
+	b, err := New("localhost", 18332, "bitcoin", "bitcoin", false)
+	require.NoError(t, err)
+
+	addr, err := b.GetNewAddress()
+	require.NoError(t, err)
+
+	t.Log(addr)
+
+	privKey, err := b.DumpPrivKey(addr)
+	require.NoError(t, err)
+
+	t.Log(privKey)
+
+	err = b.SetAccount(addr, "test-account")
+	require.NoError(t, err)
+
+	_, err = b.Generate(101)
+	require.NoError(t, err)
+
+	txID, err := b.SendToAddress(addr, 0.01)
+	require.NoError(t, err)
+
+	utxos, err := b.ListUnspent([]string{addr})
+	require.NoError(t, err)
+
+	txIDfound := false
+	for _, utxo := range utxos {
+		if utxo.TXID == txID {
+			txIDfound = true
+			break
+		}
+	}
+
+	require.True(t, txIDfound)
+}
+
 func TestGetRawTransactionRest(t *testing.T) {
 	b, err := New("localhost", 18332, "bitcoin", "bitcoin", false)
 	if err != nil {

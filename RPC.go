@@ -1053,3 +1053,32 @@ func (b *Bitcoind) GenerateToAddress(amount float64, address string) ([]string, 
 
 	return hashes, nil
 }
+
+func (b *Bitcoind) GetNewAddress() (string, error) {
+	r, err := b.call("getnewaddress", nil)
+	if err != nil {
+		return "", err
+	}
+
+	var address string
+	_ = json.Unmarshal(r.Result, &address)
+
+	return address, nil
+}
+
+func (b *Bitcoind) DumpPrivKey(address string) (string, error) {
+	r, err := b.call("dumpprivkey", []interface{}{address})
+	if err != nil {
+		return "", err
+	}
+
+	var privKey string
+	_ = json.Unmarshal(r.Result, &privKey)
+
+	return privKey, nil
+}
+
+func (b *Bitcoind) SetAccount(address, account string) error {
+	_, err := b.call("setaccount", []interface{}{address, account})
+	return err
+}
