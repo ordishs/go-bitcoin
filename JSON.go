@@ -215,11 +215,18 @@ type RawMemPool []string
 
 // MempoolInfo comment
 type MempoolInfo struct {
-	Size           int     `json:"size"`
-	Bytes          int     `json:"bytes"`
-	Usage          int     `json:"usage"`
-	MaxMemPool     int     `json:"maxmempool"`
-	MemPoolMinFree float64 `json:"mempoolminfee"`
+	Size               int     `json:"size"`               // Current tx count
+	JournalSize        int     `json:"journalsize"`        // Current tx count within the journal
+	NonFinalSize       int     `json:"nonfinalsize"`       // Current non-final tx count
+	Bytes              int     `json:"bytes"`              // Transaction size
+	Usage              int     `json:"usage"`              // Total memory usage for the mempool
+	UsageDisk          int     `json:"usagedisk"`          // Total disk usage for storing mempool transactions
+	UsageCpfp          int     `json:"usagecpfp"`          // Total memory usage for the low paying transactions
+	NonFinalUsage      int     `json:"nonfinalusage"`      // Total memory usage for the non-final mempool
+	MaxMemPool         int     `json:"maxmempool"`         // Maximum memory usage for the mempool
+	MaxMempoolSizeDisk int     `json:"maxmempoolsizedisk"` // Maximum disk usage for storing mempool transactions
+	MaxMempoolSizeCpfp int     `json:"maxmempoolsizecpfp"` // Maximum memory usage for the low paying transactions
+	MemPoolMinFree     float64 `json:"mempoolminfee"`      // Minimum fee (in BSV/kB) for tx to be accepted
 }
 
 type MempoolEntry struct {
