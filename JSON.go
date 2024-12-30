@@ -565,3 +565,12 @@ type Error struct {
 	Code    float64
 	Message string
 }
+
+// getmerkleproof2 response
+type MerkleProof struct {
+	Index      int      `json:"index"`
+	TxOrId     string   `json:"txOrId"`
+	TargetType string   `json:"targetType,omitempty"`
+	Target     string   `json:"target"`
+	Nodes      []string `json:"nodes"`
+}

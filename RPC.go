@@ -994,6 +994,17 @@ func (b *Bitcoind) GetTxOut(txHex string, vout int, includeMempool bool) (res *T
 	return
 }
 
+func (b *Bitcoind) GetMerkleProof(blockhash string, txID string) (merkleProof *MerkleProof, err error) {
+
+	r, err := b.call("getmerkleproof2", []interface{}{blockhash, txID})
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(r.Result, &merkleProof)
+	return
+}
+
 // ListUnspent comment
 func (b *Bitcoind) ListUnspent(addresses []string) (res []*UnspentTransaction, err error) {
 	var minConf uint32 = 0

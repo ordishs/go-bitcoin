@@ -865,7 +865,7 @@ func TestDNS(t *testing.T) {
 }
 
 func TestErrTimeout(t *testing.T) {
-	b, err := New("localhost", 8332, "bitcoin", "bitcoin", false, WithTimeoutDuration(1*time.Millisecond))
+	b, err := New("localhost", 18332, "bitcoin", "bitcoin", false, WithTimeoutDuration(1*time.Millisecond))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -873,4 +873,21 @@ func TestErrTimeout(t *testing.T) {
 	_, err = b.ListUnspent([]string{"n38vndTAZKFzc3BtPAJ4mecp44UwAZVski"})
 	require.ErrorIs(t, err, ErrTimeout)
 
+}
+
+func TestGetMerkleProof(t *testing.T) {
+	b, err := New("localhost", 18332, "bitcoin", "bitcoin", false)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	blk, err := b.GetBlockByHeight(102)
+	require.NoError(t, err)
+
+	res, err := b.GetMerkleProof(blk.Hash, blk.Tx[0])
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("%#v", res)
 }
