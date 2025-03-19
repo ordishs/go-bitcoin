@@ -1,16 +1,18 @@
 package bitcoin
 
 import (
+	"context"
 	"testing"
 
-	"github.com/bitcoinsv/bsvd/bsvec"
-	"github.com/libsv/go-bt"
-	"github.com/libsv/go-bt/bscript"
+	"github.com/libsv/go-bk/bec"
+	"github.com/libsv/go-bt/v2"
+	"github.com/libsv/go-bt/v2/bscript"
+	"github.com/libsv/go-bt/v2/unlocker"
 )
 
 func TestSendRawTransactions(t *testing.T) {
 	// First we need a private key
-	priv, err := bsvec.NewPrivateKey(bsvec.S256())
+	priv, err := bec.NewPrivateKey(bec.S256())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -49,7 +51,7 @@ func TestSendRawTransactions(t *testing.T) {
 
 	// Find the output that we can spend...
 	for i, out := range fundingTx.Outputs {
-		if out.LockingScript.ToString() == lockingScript.ToString() {
+		if out.LockingScript.String() == lockingScript.String() {
 			vout = i
 			break
 		}
@@ -60,59 +62,35 @@ func TestSendRawTransactions(t *testing.T) {
 	}
 
 	tx := bt.NewTx()
-	if err := tx.From(fundingTx.GetTxID(), uint32(vout), fundingTx.Outputs[vout].GetLockingScriptHexString(), fundingTx.Outputs[vout].Satoshis); err != nil {
+	if err := tx.From(fundingTx.TxID(), uint32(vout), fundingTx.Outputs[vout].LockingScriptHexString(), fundingTx.Outputs[vout].Satoshis); err != nil {
 		t.Fatal(err)
 	}
 
 	amount := fundingTx.Outputs[vout].Satoshis / 2
 
-	if err := tx.PayTo(address.AddressString, amount); err != nil {
+	if err := tx.PayTo(lockingScript, amount); err != nil {
 		t.Fatal(err)
 	}
 
-	fees := []*bt.Fee{
-		{
-			FeeType: "standard",
-			MiningFee: bt.FeeUnit{
-				Satoshis: 500,
-				Bytes:    1000,
-			},
-			RelayFee: bt.FeeUnit{
-				Satoshis: 250,
-				Bytes:    1000,
-			},
-		},
-		{
-			FeeType: "data",
-			MiningFee: bt.FeeUnit{
-				Satoshis: 500,
-				Bytes:    1000,
-			},
-			RelayFee: bt.FeeUnit{
-				Satoshis: 250,
-				Bytes:    1000,
-			},
-		},
-	}
+	fq := bt.NewFeeQuote()
 
-	if err := tx.ChangeToAddress(address.AddressString, fees); err != nil {
+	if err := tx.ChangeToAddress(address.AddressString, fq); err != nil {
 		t.Fatal(err)
 	}
 
-	if _, err = tx.SignAuto(&bt.InternalSigner{PrivateKey: priv, SigHashFlag: 0}); err != nil {
+	if err := tx.FillAllInputs(context.Background(), &unlocker.Getter{PrivateKey: priv}); err != nil {
 		t.Fatal(err)
 	}
 
-	_, err = b.SendRawTransaction(tx.ToString())
+	_, err = b.SendRawTransaction(tx.String())
 	if err != nil {
 		t.Log(err)
 	}
 
-	newTxid2, err := b.SendRawTransactionWithoutFeeCheckOrScriptCheck(tx.ToString())
+	newTxid2, err := b.SendRawTransactionWithoutFeeCheckOrScriptCheck(tx.String())
 	if err != nil {
 		t.Log(err)
 	}
 
 	t.Logf("%+v", newTxid2)
-
 }
